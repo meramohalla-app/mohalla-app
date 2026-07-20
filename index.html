@@ -13,13 +13,11 @@
         .card { background: #ffffff; border: 1px solid #e0e0e0; padding: 14px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .card-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         
-        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        input, select, button, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
         .btn-green { background-color: #2e7d32; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-blue { background-color: #1565c0; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
-
-        .msg-box { padding: 10px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
 
         .news-ticker { background: #fff8e1; border-left: 4px solid #ffb300; padding: 8px 12px; font-size: 13px; font-weight: 500; margin-bottom: 15px; border-radius: 4px; }
 
@@ -37,10 +35,17 @@
         .feedback-toast { display: none; text-align: center; margin-top: 8px; font-weight: bold; font-size: 14px; }
 
         .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-        .service-item { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; }
+        .service-item { background: #f5f5f5; border: 1px solid #ddd; padding: 12px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; }
         
         .user-header { display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
         .logout-btn { width: auto; padding: 4px 10px; margin: 0; background: #c62828; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+
+        /* Modal / Popups Styling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
+        .close-btn { float: right; font-size: 20px; font-weight: bold; cursor: pointer; color: #888; }
+        
+        .call-btn { display: inline-block; padding: 4px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 12px; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -51,20 +56,16 @@
     <!-- 🔒 1. LOGIN SCREEN -->
     <div id="login-screen" class="card">
         <div class="card-title">🔒 सुरक्षित OTP लॉगिन</div>
-        
         <input type="text" id="user-name" placeholder="पूरा नाम लिखें" value="Jitendra Pal">
         <input type="file" accept="image/*">
         <select><option>उत्तर प्रदेश</option></select>
         <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)" value="169558">
         <input type="text" id="user-phone" placeholder="10 अंकों का मोबाइल नंबर" value="9795124613">
-        
-        <button id="otp-btn" class="btn-green" onclick="generateAndShowOTP()">OTP भेजें</button>
+        <button class="btn-green" onclick="generateAndShowOTP()">OTP भेजें</button>
 
-        <!-- OTP Area -->
         <div id="otp-section" style="display: none; margin-top: 12px; border-top: 1px solid #ddd; padding-top: 10px;">
-            <div class="msg-box">✅ OTP भेज दिया गया है! आपका टेस्ट OTP: <b id="show-otp">1234</b></div>
-            <label style="font-size: 12px; font-weight: bold; color: #1565c0;">4-अंकों का OTP दर्ज करें:</label>
-            <input type="text" id="input-otp" placeholder="उदा: 1234" value="1234" maxlength="4">
+            <p style="color: green; font-size: 12px; font-weight: bold;">✅ OTP भेज दिया गया है! आपका कोड: <b id="show-otp">1234</b></p>
+            <input type="text" id="input-otp" placeholder="4-अंकों का OTP दर्ज करें" value="1234" maxlength="4">
             <button class="btn-blue" onclick="doLoginProcess()">लॉगिन करें</button>
         </div>
     </div>
@@ -77,20 +78,27 @@
             <button class="logout-btn" onclick="doLogout()">लॉगआउट 🚪</button>
         </div>
 
-        <div class="news-ticker">
-            📢 <b>ताज़ा अपडेट:</b> ग्रामसभा में कल सुबह 10 बजे स्वास्थ्य शिविर और बैठक का आयोजन होगा।
+        <!-- 📰 NEWS & NOTICE UPDATE WITH UPLOAD -->
+        <div class="card">
+            <div class="card-title">📢 न्यूज़ व नोटिस बोर्ड</div>
+            <div class="news-ticker">
+                <b>ताज़ा अपडेट:</b> ग्रामसभा में कल सुबह 10 बजे स्वास्थ्य शिविर का आयोजन होगा।
+            </div>
+            <button class="btn-blue" style="font-size:12px;" onclick="openModal('news-modal')">➕ नई खबर / नोटिस पोस्ट करें (फोटो/वीडियो के साथ)</button>
         </div>
 
+        <!-- 💼 GOVT EXAM & Mega Test -->
         <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
             <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
             <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
-            <button class="btn-orange">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
+            <button class="btn-orange" onclick="alert('₹10 का पेमेंट गेटवे खुल रहा है...')">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
         </div>
 
+        <!-- 🎯 DAILY QUIZ (200 Questions logic with ₹10 limit) -->
         <div class="card quiz-card">
             <div class="quiz-header">
                 <span>🎯 आज का मुफ्त टेस्ट (Daily Quiz)</span>
-                <span id="q-count">1/5</span>
+                <span id="q-count">1/10</span>
             </div>
             <div class="stats-text">
                 <span>सही: <b id="correct-count" style="color:green;">0</b></span>
@@ -106,32 +114,91 @@
             <div id="feedback" class="feedback-toast"></div>
         </div>
 
+        <!-- 🛍️ MOHALLA BAZAR & MOHALLA MITRA -->
         <div class="card">
             <div class="card-title">🏪 मोहल्ला सेवाएं</div>
             <div class="service-grid">
-                <div class="service-item">🛍️ मोहल्ला बाज़ार<br><span style="font-size:10px; color:#666;">(सामान खरीदें/बेचें)</span></div>
-                <div class="service-item">🤝 मोहल्ला मित्र<br><span style="font-size:10px; color:#666;">(स्थानीय मददगार)</span></div>
+                <div class="service-item" onclick="openModal('bazar-modal')">
+                    🛍️ मोहल्ला बाज़ार<br><span style="font-size:10px; color:#666;">(खरीदें/बेचें - फोटो/वीडियो)</span>
+                </div>
+                <div class="service-item" onclick="openModal('mitra-modal')">
+                    🤝 मोहल्ला मित्र<br><span style="font-size:10px; color:#666;">(स्थानीय मददगार व नंबर)</span>
+                </div>
             </div>
         </div>
 
+        <!-- 🚨 LOUD EMERGENCY ALERT -->
         <div class="card" style="background: #ffebee; border-color: #ffcdd2;">
             <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व इमरजेंसी अलार्म</div>
             <p style="font-size: 12px; color: #555; margin-bottom: 8px;">उदा: गाँव के बांध के पास पानी बढ़ रहा है या कोई आपदा स्थिति...</p>
-            <button class="btn-red" onclick="playThreeBeeps()">🔊 इमरजेंसी अलर्ट बजाएं (3 छोटी बीप)</button>
+            <button class="btn-red" onclick="playLoudAlarm()">🔊 लाउड इमरजेंसी अलार्म बजाएं (ज़ोरदार बीप)</button>
         </div>
 
+        <!-- 📞 DIRECT CALL EMERGENCY NUMBERS -->
         <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
-            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर</div>
-            <p style="font-size: 13px; line-height: 1.6;">
-                🚑 एम्बुलेंस: <b>108</b> | 🚓 पुलिस: <b>112</b><br>
-                🔥 फायर ब्रिगेड: <b>101</b> | 👩 महिला हेल्पलाइन: <b>1090</b>
+            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर (क्लिक करके कॉल करें)</div>
+            <p style="font-size: 13px; line-height: 2;">
+                🚑 एम्बुलेंस: <b>108</b> <a href="tel:108" class="call-btn">कॉल करें 📞</a><br>
+                🚓 पुलिस: <b>112</b> <a href="tel:112" class="call-btn">कॉल करें 📞</a><br>
+                🔥 फायर ब्रिगेड: <b>101</b> <a href="tel:101" class="call-btn">कॉल करें 📞</a><br>
+                👩 महिला हेल्पलाइन: <b>1090</b> <a href="tel:1090" class="call-btn">कॉल करें 📞</a>
             </p>
         </div>
     </div>
 </div>
 
+<!-- ================= POPUP MODALS ================= -->
+
+<!-- 1. NEWS POST MODAL -->
+<div id="news-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
+        <h3>📢 न्यूज़ / नोटिस पोस्ट करें</h3>
+        <input type="text" placeholder="खबर का शीर्षक लिखें">
+        <textarea rows="3" placeholder="खबर का पूरा विवरण लिखें..."></textarea>
+        <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो अपलोड करें:</label>
+        <input type="file" accept="image/,video/">
+        <button class="btn-blue" onclick="alert('आपकी न्यूज़ सफलतापूर्वक पोस्ट हो गई!'); closeModal('news-modal');">पोस्ट प्रकाशित करें</button>
+    </div>
+</div>
+
+<!-- 2. MOHALLA BAZAR MODAL -->
+<div id="bazar-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('bazar-modal')">&times;</span>
+        <h3>🛍️ मोहल्ला बाज़ार (सामान जोड़ें)</h3>
+        <input type="text" placeholder="सामान का नाम (उदा: साइकिल, अनाज, मोबाइल)">
+        <input type="text" placeholder="कीमत (₹ रुपये में)">
+        <input type="text" placeholder="आपका संपर्क नंबर">
+        <label style="font-size:12px; font-weight:bold;">सामान की फ़ोटो एवं वीडियो चुनें:</label>
+        <input type="file" accept="image/,video/" multiple>
+        <button class="btn-green" onclick="alert('सामान बिक्री के लिए मोहल्ला बाज़ार में जुड़ गया!'); closeModal('bazar-modal');">बिक्री के लिए पोस्ट करें</button>
+    </div>
+</div>
+
+<!-- 3. MOHALLA MITRA MODAL -->
+<div id="mitra-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('mitra-modal')">&times;</span>
+        <h3>🤝 मोहल्ला मित्र (मददगार नंबर जोड़ें)</h3>
+        <input type="text" placeholder="मददगार का पूरा नाम">
+        <select>
+            <option>इलेक्ट्रिशियन (बिजली वाला)</option>
+            <option>प्लंबर (नल ठीक करने वाला)</option>
+            <option>मिस्त्री (मकान निर्माण)</option>
+            <option>डॉक्टर / कंपाउंडर</option>
+            <option>अन्य स्थानीय मददगार</option>
+        </select>
+        <input type="text" placeholder="मोबाइल नंबर (उदा: 9876543210)">
+        <button class="btn-blue" onclick="alert('मोहल्ला मित्र की लिस्ट में नंबर जुड़ गया!'); closeModal('mitra-modal');">लिस्ट में नंबर जोड़ें</button>
+    </div>
+</div>
+
 <script>
     var currentOTP = "1234";
+
+    function openModal(id) { document.getElementById(id).style.display = "flex"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
     function generateAndShowOTP() {
         currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
@@ -166,20 +233,21 @@
         checkSession();
     }
 
-    function playThreeBeeps() {
+    // High Volume & Longer Emergency Alarm
+    function playLoudAlarm() {
         try {
             var ctx = new (window.AudioContext || window.webkitAudioContext)();
-            [0, 0.25, 0.5].forEach(function(delay) {
+            [0, 0.4, 0.8].forEach(function(delay) {
                 var osc = ctx.createOscillator();
                 var gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
-                gain.gain.setValueAtTime(0.5, ctx.currentTime + delay);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.15);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(1200, ctx.currentTime + delay);
+                gain.gain.setValueAtTime(1.0, ctx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.35);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 osc.start(ctx.currentTime + delay);
-                osc.stop(ctx.currentTime + delay + 0.15);
+                osc.stop(ctx.currentTime + delay + 0.35);
             });
         } catch(e){}
     }
@@ -192,7 +260,7 @@
             osc.type = 'sine';
             osc.frequency.setValueAtTime(400, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.setValueAtTime(0.5, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
             osc.connect(gain);
             gain.connect(ctx.destination);
@@ -201,12 +269,18 @@
         } catch(e){}
     }
 
+    // Quiz Questions Data (200 Questions Logic Demo)
     var questions = [
         { q: "भारत की राजधानी कौन सी है?", options: ["लखनऊ", "नई दिल्ली", "मुंबई", "कोलकाता"], answer: 1 },
         { q: "उत्तर प्रदेश की राजधानी क्या है?", options: ["कानपुर", "वाराणसी", "लखनऊ", "प्रयागराज"], answer: 2 },
         { q: "भारत का राष्ट्रीय पक्षी कौन सा है?", options: ["मोर", "तोता", "कबूतर", "चील"], answer: 0 },
         { q: "हमारे देश के राष्ट्रपिता कौन हैं?", options: ["नेहरू जी", "महात्मा गांधी", "भगत सिंह", "सुभाष चंद्र बोस"], answer: 1 },
-        { q: "एक सप्ताह में कितने दिन होते हैं?", options: ["5", "6", "7", "8"], answer: 2 }
+        { q: "एक सप्ताह में कितने दिन होते हैं?", options: ["5", "6", "7", "8"], answer: 2 },
+        { q: "भारत की राष्ट्रीय नदी कौन सी है?", options: ["यमुना", "गंगा", "गोदावरी", "नर्मदा"], answer: 1 },
+        { q: "सूर्य किस दिशा से उगता है?", options: ["पूर्व", "पश्चिम", "उत्तर", "दक्षिण"], answer: 0 },
+        { q: "उत्तर प्रदेश के मुख्यमंत्री कौन हैं?", options: ["योगी आदित्यनाथ", "अखिलेश यादव", "मायावती", "केशव प्रसाद"], answer: 0 },
+        { q: "भारत का राष्ट्रीय पशु कौन सा है?", options: ["शेर", "बाघ", "हाथी", "घोड़ा"], answer: 1 },
+        { q: "जन-गण-मन किसने लिखा है?", options: ["कबीरदास", "रवींद्रनाथ टैगोर", "सूरदास", "तुलसीदास"], answer: 1 }
     ];
 
     var currentQ = 0;
@@ -215,16 +289,16 @@
     var canClick = true;
 
     function loadQuestion() {
-        if(currentQ >= questions.length) {
-            document.getElementById("question-box").innerText = "🎉 क्विज़ पूरा हुआ!";
-            document.getElementById("options-box").innerHTML = "<div style='grid-column: span 2; text-align:center; font-weight:bold;'>आपका स्कोर: " + correctAns + "/" + questions.length + "</div>";
+        if(currentQ >= 10) {
+            document.getElementById("question-box").innerText = "🔒 मुफ़्त 10 क्विज़ पूरे हुए!";
+            document.getElementById("options-box").innerHTML = "<div style='grid-column: span 2; text-align:center;'><p style='font-size:12px; margin-bottom:8px;'>आगे के 190+ प्रश्नों को अनलॉक करने के लिए ₹10 का भुगतान करें।</p><button class='btn-orange' onclick=\"alert('₹10 भुगतान गेटवे पर भेजा जा रहा है...')\">💳 ₹10 देकर 200 प्रश्न अनलॉक करें</button></div>";
             document.getElementById("feedback").style.display = "none";
             return;
         }
 
         canClick = true;
         var qData = questions[currentQ];
-        document.getElementById("q-count").innerText = (currentQ + 1) + "/" + questions.length;
+        document.getElementById("q-count").innerText = (currentQ + 1) + "/10";
         document.getElementById("question-box").innerText = "Q. " + qData.q;
         document.getElementById("feedback").style.display = "none";
 
@@ -277,8 +351,8 @@
         var accuracy = totalAttempted > 0 ? Math.round((correctAns / totalAttempted) * 100) : 0;
         document.getElementById("accuracy-percent").innerText = accuracy + "%";
 
-        var correctWidth = (correctAns / questions.length) * 100;
-        var wrongWidth = (wrongAns / questions.length) * 100;
+        var correctWidth = (correctAns / 10) * 100;
+        var wrongWidth = (wrongAns / 10) * 100;
 
         document.getElementById("bar-correct").style.width = correctWidth + "%";
         document.getElementById("bar-wrong").style.width = wrongWidth + "%";
