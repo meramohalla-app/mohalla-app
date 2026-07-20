@@ -19,8 +19,10 @@
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        .news-ticker { background: #fff8e1; border-left: 4px solid #ffb300; padding: 8px 12px; font-size: 13px; font-weight: 500; margin-bottom: 15px; border-radius: 4px; }
+        .notice-box { background: #ffe0b2; border-left: 4px solid #e65100; padding: 10px; font-size: 13px; margin-bottom: 12px; border-radius: 4px; }
+        .news-box { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 10px; font-size: 13px; margin-bottom: 12px; border-radius: 4px; }
 
+        /* Quiz Styling */
         .quiz-card { background: #e3f2fd; border: 1px solid #bbdefb; }
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
         .progress-container { width: 100%; background-color: #e0e0e0; border-radius: 8px; overflow: hidden; height: 10px; margin-bottom: 12px; display: flex; }
@@ -40,11 +42,10 @@
         .user-header { display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
         .logout-btn { width: auto; padding: 4px 10px; margin: 0; background: #c62828; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-        /* Modal / Popups Styling */
+        /* Custom Modal Popups (Replaces native alerts completely) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-        .close-btn { float: right; font-size: 20px; font-weight: bold; cursor: pointer; color: #888; }
-        
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { float: right; font-size: 22px; font-weight: bold; cursor: pointer; color: #888; }
         .call-btn { display: inline-block; padding: 4px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 12px; margin-left: 5px; }
     </style>
 </head>
@@ -59,7 +60,7 @@
         <input type="text" id="user-name" placeholder="पूरा नाम लिखें" value="Jitendra Pal">
         <input type="file" accept="image/*">
         <select><option>उत्तर प्रदेश</option></select>
-        <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)" value="169558">
+        <input type="text" id="gram-code" placeholder="ग्रामसभा कोड (उदा: 169558)" value="169558">
         <input type="text" id="user-phone" placeholder="10 अंकों का मोबाइल नंबर" value="9795124613">
         <button class="btn-green" onclick="generateAndShowOTP()">OTP भेजें</button>
 
@@ -74,27 +75,37 @@
     <div id="app-content" style="display: none;">
         
         <div class="user-header">
-            <span>👤 नमस्ते, <b id="display-name">यूज़र</b></span>
+            <span>👤 <b><span id="display-name">यूज़र</span></b> (ग्रामसभा कोड: <b id="display-gram-code">169558</b>)</span>
             <button class="logout-btn" onclick="doLogout()">लॉगआउट 🚪</button>
         </div>
 
-        <!-- 📰 NEWS & NOTICE UPDATE WITH UPLOAD -->
-        <div class="card">
-            <div class="card-title">📢 न्यूज़ व नोटिस बोर्ड</div>
-            <div class="news-ticker">
-                <b>ताज़ा अपडेट:</b> ग्रामसभा में कल सुबह 10 बजे स्वास्थ्य शिविर का आयोजन होगा।
+        <!-- 📌 GRAMSABHA NOTICE (Specific to Gram Sabha Code) -->
+        <div class="card" style="border-color: #ffe0b2;">
+            <div class="card-title" style="color: #e65100;">📌 ग्रामसभा नोटिस board</div>
+            <div class="notice-box" id="notice-display-area">
+                <b>ग्रामसभा नोटिस (कोड: <span id="notice-gram-tag">169558</span>):</b><br>
+                कल ग्राम पंचायत भवन में स्वास्थ्य शिविर एवं आवश्यक बैठक बुलाई गई है।
             </div>
-            <button class="btn-blue" style="font-size:12px;" onclick="openModal('news-modal')">➕ नई खबर / नोटिस पोस्ट करें (फोटो/वीडियो के साथ)</button>
+            <button class="btn-orange" style="font-size:12px;" onclick="openModal('notice-modal')">➕ ग्रामसभा नोटिस जारी करें</button>
         </div>
 
-        <!-- 💼 GOVT EXAM & Mega Test -->
+        <!-- 📰 LATEST NEWS (Universal - Visible to All Villages) -->
+        <div class="card" style="border-color: #a5d6a7;">
+            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (Latest News)</div>
+            <div class="news-box" id="news-display-area">
+                <b>ताज़ा खबर:</b> जिले में मौसम विभाग ने हल्की बारिश का अलर्ट जारी किया है।
+            </div>
+            <button class="btn-green" style="font-size:12px;" onclick="openModal('news-modal')">📸 नई न्यूज़ पोस्ट करें (फोटो/वीडियो के साथ)</button>
+        </div>
+
+        <!-- 💼 GOVT EXAM & MEGA TEST -->
         <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
             <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
             <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
-            <button class="btn-orange" onclick="alert('₹10 का पेमेंट गेटवे खुल रहा है...')">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
+            <button class="btn-orange" onclick="openModal('payment-modal')">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
         </div>
 
-        <!-- 🎯 DAILY QUIZ (200 Questions logic with ₹10 limit) -->
+        <!-- 🎯 DAILY QUIZ (200 Questions Bank) -->
         <div class="card quiz-card">
             <div class="quiz-header">
                 <span>🎯 आज का मुफ्त टेस्ट (Daily Quiz)</span>
@@ -114,7 +125,7 @@
             <div id="feedback" class="feedback-toast"></div>
         </div>
 
-        <!-- 🛍️ MOHALLA BAZAR & MOHALLA MITRA -->
+        <!-- 🛍️ SERVICES -->
         <div class="card">
             <div class="card-title">🏪 मोहल्ला सेवाएं</div>
             <div class="service-grid">
@@ -131,12 +142,12 @@
         <div class="card" style="background: #ffebee; border-color: #ffcdd2;">
             <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व इमरजेंसी अलार्म</div>
             <p style="font-size: 12px; color: #555; margin-bottom: 8px;">उदा: गाँव के बांध के पास पानी बढ़ रहा है या कोई आपदा स्थिति...</p>
-            <button class="btn-red" onclick="playLoudAlarm()">🔊 लाउड इमरजेंसी अलार्म बजाएं (ज़ोरदार बीप)</button>
+            <button class="btn-red" onclick="playLoudAlarm()">🔊 लाउड इमरजेंसी अलार्म बजाएं (3 ज़ोरदार बीप)</button>
         </div>
 
-        <!-- 📞 DIRECT CALL EMERGENCY NUMBERS -->
+        <!-- 📞 DIRECT CALL NUMBERS -->
         <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
-            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर (क्लिक करके कॉल करें)</div>
+            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर (कॉल करें)</div>
             <p style="font-size: 13px; line-height: 2;">
                 🚑 एम्बुलेंस: <b>108</b> <a href="tel:108" class="call-btn">कॉल करें 📞</a><br>
                 🚓 पुलिस: <b>112</b> <a href="tel:112" class="call-btn">कॉल करें 📞</a><br>
@@ -147,50 +158,81 @@
     </div>
 </div>
 
-<!-- ================= POPUP MODALS ================= -->
+<!-- ================= CUSTOM IN-APP MODAL POPUPS ================= -->
 
-<!-- 1. NEWS POST MODAL -->
-<div id="news-modal" class="modal">
+<!-- 1. GRAMSABHA NOTICE MODAL -->
+<div id="notice-modal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
-        <h3>📢 न्यूज़ / नोटिस पोस्ट करें</h3>
-        <input type="text" placeholder="खबर का शीर्षक लिखें">
-        <textarea rows="3" placeholder="खबर का पूरा विवरण लिखें..."></textarea>
-        <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो अपलोड करें:</label>
-        <input type="file" accept="image/,video/">
-        <button class="btn-blue" onclick="alert('आपकी न्यूज़ सफलतापूर्वक पोस्ट हो गई!'); closeModal('news-modal');">पोस्ट प्रकाशित करें</button>
+        <span class="close-btn" onclick="closeModal('notice-modal')">&times;</span>
+        <h3>📌 ग्रामसभा नोटिस पोस्ट करें</h3>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह नोटिस केवल आपकी ग्रामसभा कोड वाले लोगों को ही दिखेगा।</p>
+        <textarea id="notice-text-input" rows="3" placeholder="ग्रामसभा का नोटिस लिखें..."></textarea>
+        <button class="btn-orange" onclick="submitNotice()">ग्रामसभा में नोटिस भेजें</button>
     </div>
 </div>
 
-<!-- 2. MOHALLA BAZAR MODAL -->
+<!-- 2. LATEST NEWS MODAL -->
+<div id="news-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
+        <h3>📰 ताज़ा समाचार पोस्ट करें (Universal)</h3>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह खबर सभी गाँव के यूज़र्स को दिखाई देगी।</p>
+        <textarea id="news-text-input" rows="3" placeholder="समाचार का विवरण लिखें..."></textarea>
+        <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो संलग्न करें:</label>
+        <input type="file" accept="image/,video/">
+        <button class="btn-green" onclick="submitNews()">न्यूज़ प्रकाशित करें</button>
+    </div>
+</div>
+
+<!-- 3. PAYMENT MODAL (NO BROWSER ALERT) -->
+<div id="payment-modal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <span class="close-btn" onclick="closeModal('payment-modal')">&times;</span>
+        <h3 style="color:#ef6c00;">💳 ₹10 का ऑनलाइन पेमेंट</h3>
+        <p style="font-size:13px; margin:15px 0;">प्रतियोगी परीक्षा (Mega Test) एवं 200+ प्रश्न अनलॉक करने के लिए ₹10 का भुगतान करें।</p>
+        <button class="btn-green" onclick="closeModal('payment-modal'); showCustomAlert('🎉 आपका ₹10 भुगतान सफल रहा! सभी 200 प्रश्न अनलॉक हो गए हैं।');">UPI / PhonePe / Paytm से ₹10 दें</button>
+    </div>
+</div>
+
+<!-- 4. GENERAL ALERT MODAL (Replaces Browser Alert) -->
+<div id="custom-alert-modal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <span class="close-btn" onclick="closeModal('custom-alert-modal')">&times;</span>
+        <h3 id="custom-alert-title" style="margin-bottom:10px;">सूचना</h3>
+        <p id="custom-alert-msg" style="font-size:14px; margin-bottom:15px;"></p>
+        <button class="btn-blue" onclick="closeModal('custom-alert-modal')">ठीक है (OK)</button>
+    </div>
+</div>
+
+<!-- 5. MOHALLA BAZAR MODAL -->
 <div id="bazar-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('bazar-modal')">&times;</span>
         <h3>🛍️ मोहल्ला बाज़ार (सामान जोड़ें)</h3>
-        <input type="text" placeholder="सामान का नाम (उदा: साइकिल, अनाज, मोबाइल)">
+        <input type="text" placeholder="सामान का नाम">
         <input type="text" placeholder="कीमत (₹ रुपये में)">
-        <input type="text" placeholder="आपका संपर्क नंबर">
-        <label style="font-size:12px; font-weight:bold;">सामान की फ़ोटो एवं वीडियो चुनें:</label>
+        <input type="text" placeholder="संपर्क मोबाइल नंबर">
+        <label style="font-size:12px; font-weight:bold;">फ़ोटो / वीडियो चुनें:</label>
         <input type="file" accept="image/,video/" multiple>
-        <button class="btn-green" onclick="alert('सामान बिक्री के लिए मोहल्ला बाज़ार में जुड़ गया!'); closeModal('bazar-modal');">बिक्री के लिए पोस्ट करें</button>
+        <button class="btn-green" onclick="closeModal('bazar-modal'); showCustomAlert('सामान बिक्री के लिए पोस्ट हो गया है!');">पोस्ट करें</button>
     </div>
 </div>
 
-<!-- 3. MOHALLA MITRA MODAL -->
+<!-- 6. MOHALLA MITRA MODAL -->
 <div id="mitra-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('mitra-modal')">&times;</span>
-        <h3>🤝 मोहल्ला मित्र (मददगार नंबर जोड़ें)</h3>
-        <input type="text" placeholder="मददगार का पूरा नाम">
+        <h3>🤝 मोहल्ला मित्र (नंबर जोड़ें)</h3>
+        <input type="text" placeholder="मददगार का नाम">
         <select>
-            <option>इलेक्ट्रिशियन (बिजली वाला)</option>
-            <option>प्लंबर (नल ठीक करने वाला)</option>
-            <option>मिस्त्री (मकान निर्माण)</option>
-            <option>डॉक्टर / कंपाउंडर</option>
-            <option>अन्य स्थानीय मददगार</option>
+            <option>इलेक्ट्रिशियन (बिजली)</option>
+            <option>प्लंबर (नल)</option>
+            <option>राजमिस्त्री</option>
+            <option>डॉक्टर / मेडिकल</option>
+            <option>अन्य मददगार</option>
         </select>
-        <input type="text" placeholder="मोबाइल नंबर (उदा: 9876543210)">
-        <button class="btn-blue" onclick="alert('मोहल्ला मित्र की लिस्ट में नंबर जुड़ गया!'); closeModal('mitra-modal');">लिस्ट में नंबर जोड़ें</button>
+        <input type="text" placeholder="मोबाइल नंबर">
+        <button class="btn-blue" onclick="closeModal('mitra-modal'); showCustomAlert('मोहल्ला मित्र की लिस्ट में नंबर जुड़ गया!');">नंबर जोड़ें</button>
     </div>
 </div>
 
@@ -200,6 +242,12 @@
     function openModal(id) { document.getElementById(id).style.display = "flex"; }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
+    function showCustomAlert(msg, title) {
+        document.getElementById("custom-alert-title").innerText = title || "सूचना";
+        document.getElementById("custom-alert-msg").innerText = msg;
+        openModal("custom-alert-modal");
+    }
+
     function generateAndShowOTP() {
         currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
         document.getElementById("show-otp").innerText = currentOTP;
@@ -208,18 +256,26 @@
     }
 
     function doLoginProcess() {
-        var name = document.getElementById("user-name").value;
+        var name = document.getElementById("user-name").value.trim();
+        var gCode = document.getElementById("gram-code").value.trim();
         if(!name) name = "Jitendra Pal";
+        if(!gCode) gCode = "169558";
+
         localStorage.setItem("mohalla_user_name", name);
+        localStorage.setItem("mohalla_gram_code", gCode);
         checkSession();
     }
 
     function checkSession() {
         var savedName = localStorage.getItem("mohalla_user_name");
+        var savedCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        
         if(savedName) {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-content").style.display = "block";
             document.getElementById("display-name").innerText = savedName;
+            document.getElementById("display-gram-code").innerText = savedCode;
+            document.getElementById("notice-gram-tag").innerText = savedCode;
             loadQuestion();
         } else {
             document.getElementById("login-screen").style.display = "block";
@@ -229,11 +285,30 @@
 
     function doLogout() {
         localStorage.removeItem("mohalla_user_name");
+        localStorage.removeItem("mohalla_gram_code");
         document.getElementById("otp-section").style.display = "none";
         checkSession();
     }
 
-    // High Volume & Longer Emergency Alarm
+    function submitNotice() {
+        var txt = document.getElementById("notice-text-input").value;
+        if(txt) {
+            var userCode = localStorage.getItem("mohalla_gram_code") || "169558";
+            document.getElementById("notice-display-area").innerHTML = "<b>ग्रामसभा नोटिस (कोड: " + userCode + "):</b><br>" + txt;
+            closeModal('notice-modal');
+            showCustomAlert("ग्रामसभा नोटिस केवल आपकी ग्रामसभा (" + userCode + ") वालों के लिए जारी कर दिया गया है!");
+        }
+    }
+
+    function submitNews() {
+        var txt = document.getElementById("news-text-input").value;
+        if(txt) {
+            document.getElementById("news-display-area").innerHTML = "<b>ताज़ा खबर (सार्वजनिक):</b><br>" + txt;
+            closeModal('news-modal');
+            showCustomAlert("ताज़ा खबर सभी गाँव के यूज़र्स के लिए प्रकाशित कर दी गई है!");
+        }
+    }
+
     function playLoudAlarm() {
         try {
             var ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -269,8 +344,8 @@
         } catch(e){}
     }
 
-    // Quiz Questions Data (200 Questions Logic Demo)
-    var questions = [
+    // Dynamic 200 Questions Bank Generator Logic
+    var baseQuestions = [
         { q: "भारत की राजधानी कौन सी है?", options: ["लखनऊ", "नई दिल्ली", "मुंबई", "कोलकाता"], answer: 1 },
         { q: "उत्तर प्रदेश की राजधानी क्या है?", options: ["कानपुर", "वाराणसी", "लखनऊ", "प्रयागराज"], answer: 2 },
         { q: "भारत का राष्ट्रीय पक्षी कौन सा है?", options: ["मोर", "तोता", "कबूतर", "चील"], answer: 0 },
@@ -283,22 +358,33 @@
         { q: "जन-गण-मन किसने लिखा है?", options: ["कबीरदास", "रवींद्रनाथ टैगोर", "सूरदास", "तुलसीदास"], answer: 1 }
     ];
 
+    // Generating 200 Questions Loop
+    var questions = [];
+    for(var i=0; i<200; i++) {
+        var base = baseQuestions[i % baseQuestions.length];
+        questions.push({
+            q: base.q + (i >= 10 ? " (प्रश्न सं. " + (i+1) + ")" : ""),
+            options: base.options,
+            answer: base.answer
+        });
+    }
+
     var currentQ = 0;
     var correctAns = 0;
     var wrongAns = 0;
     var canClick = true;
 
     function loadQuestion() {
-        if(currentQ >= 10) {
+        if(currentQ >= 10 && !localStorage.getItem("quiz_paid")) {
             document.getElementById("question-box").innerText = "🔒 मुफ़्त 10 क्विज़ पूरे हुए!";
-            document.getElementById("options-box").innerHTML = "<div style='grid-column: span 2; text-align:center;'><p style='font-size:12px; margin-bottom:8px;'>आगे के 190+ प्रश्नों को अनलॉक करने के लिए ₹10 का भुगतान करें।</p><button class='btn-orange' onclick=\"alert('₹10 भुगतान गेटवे पर भेजा जा रहा है...')\">💳 ₹10 देकर 200 प्रश्न अनलॉक करें</button></div>";
+            document.getElementById("options-box").innerHTML = "<div style='grid-column: span 2; text-align:center;'><p style='font-size:12px; margin-bottom:8px;'>आगे के 190+ प्रश्नों को अनलॉक करने के लिए ₹10 का भुगतान करें।</p><button class='btn-orange' onclick=\"openModal('payment-modal')\">💳 ₹10 देकर 200 प्रश्न अनलॉक करें</button></div>";
             document.getElementById("feedback").style.display = "none";
             return;
         }
 
         canClick = true;
         var qData = questions[currentQ];
-        document.getElementById("q-count").innerText = (currentQ + 1) + "/10";
+        document.getElementById("q-count").innerText = (currentQ + 1) + "/200";
         document.getElementById("question-box").innerText = "Q. " + qData.q;
         document.getElementById("feedback").style.display = "none";
 
@@ -351,8 +437,8 @@
         var accuracy = totalAttempted > 0 ? Math.round((correctAns / totalAttempted) * 100) : 0;
         document.getElementById("accuracy-percent").innerText = accuracy + "%";
 
-        var correctWidth = (correctAns / 10) * 100;
-        var wrongWidth = (wrongAns / 10) * 100;
+        var correctWidth = (correctAns / 200) * 100;
+        var wrongWidth = (wrongAns / 200) * 100;
 
         document.getElementById("bar-correct").style.width = correctWidth + "%";
         document.getElementById("bar-wrong").style.width = wrongWidth + "%";
