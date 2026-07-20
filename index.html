@@ -49,8 +49,11 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; position: relative; }
         .close-btn { float: right; font-size: 22px; font-weight: bold; cursor: pointer; color: #888; }
-        .call-btn { display: inline-block; padding: 4px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 12px; margin-left: 5px; }
         
+        /* Receiver Call Button Styling */
+        .receiver-btn { display: inline-flex; align-items: center; justify-content: center; background: #2e7d32; color: white; text-decoration: none; border-radius: 50%; width: 34px; height: 34px; font-size: 16px; margin-left: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .emergency-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee; }
+
         .feed-item { background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 13px; }
     </style>
 </head>
@@ -59,7 +62,7 @@
 <div class="container">
     <h1>📱 मेरा मोहल्ला</h1>
 
-    <!-- 🔒 1. LOGIN SCREEN -->
+    <!-- 🔒 LOGIN SCREEN -->
     <div id="login-screen" class="card">
         <div class="card-title">🔒 सुरक्षित OTP लॉगिन</div>
         <input type="text" id="user-name" placeholder="पूरा नाम लिखें" value="Jitendra Pal">
@@ -76,7 +79,7 @@
         </div>
     </div>
 
-    <!-- 📲 2. MAIN APP CONTENT -->
+    <!-- 📲 MAIN APP CONTENT (SERIAL ORDERED) -->
     <div id="app-content" style="display: none;">
         
         <div class="user-header">
@@ -84,32 +87,7 @@
             <button class="logout-btn" onclick="doLogout()">लॉगआउट 🚪</button>
         </div>
 
-        <!-- 🚨 1. EMERGENCY MUNADI & ALARM (MERGED FEATURE) -->
-        <div class="card" style="background: #fff5f5; border-color: #ffcdd2;">
-            <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व अलार्म (24 घंटे एक्सपायरी)</div>
-            <div id="munadi-display-area">
-                <!-- Dynamic Munadi Rendered Here -->
-            </div>
-            <button class="btn-red" style="font-size:13px; margin-top:8px;" onclick="openModal('munadi-modal')">📣 नई आपातकालीन मुनादी करें (फोटो/वीडियो व अलार्म के साथ)</button>
-        </div>
-
-        <!-- 📰 2. LATEST NEWS (3 Days Expiry) -->
-        <div class="card" style="border-color: #a5d6a7;">
-            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (Latest News)</div>
-            <div id="news-display-area">
-                <!-- Dynamic News Rendered Here -->
-            </div>
-            <button class="btn-green" style="font-size:12px;" onclick="openModal('news-modal')">📸 नई न्यूज़ पोस्ट करें (फोटो/वीडियो के साथ)</button>
-        </div>
-
-        <!-- 💼 GOVT EXAM & MEGA TEST -->
-        <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
-            <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
-            <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
-            <button class="btn-orange" onclick="openModal('payment-modal')">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
-        </div>
-
-        <!-- 🎯 DAILY QUIZ (200 Questions Bank) -->
+        <!-- 1️⃣ सीरियल 1: क्विज़ (Daily Quiz) -->
         <div class="card quiz-card">
             <div class="quiz-header">
                 <span>🎯 आज का मुफ्त टेस्ट (Daily Quiz)</span>
@@ -129,7 +107,32 @@
             <div id="feedback" class="feedback-toast"></div>
         </div>
 
-        <!-- 🛍️ SERVICES -->
+        <!-- 2️⃣ सीरियल 2: सरकारी नौकरी एवं प्रतियोगी परीक्षाएं -->
+        <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
+            <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
+            <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
+            <button class="btn-orange" onclick="openModal('payment-modal')">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
+        </div>
+
+        <!-- 3️⃣ सीरियल 3: आपातकालीन मुनादी एवं अलार्म -->
+        <div class="card" style="background: #fff5f5; border-color: #ffcdd2;">
+            <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व अलार्म (24 घंटे एक्सपायरी)</div>
+            <div id="munadi-display-area">
+                <!-- Dynamic Munadi -->
+            </div>
+            <button class="btn-red" style="font-size:13px; margin-top:8px;" onclick="openModal('munadi-modal')">📣 नई आपातकालीन मुनादी करें (फोटो/वीडियो व अलार्म के साथ)</button>
+        </div>
+
+        <!-- 4️⃣ सीरियल 4: ताज़ा समाचार (Latest News) -->
+        <div class="card" style="border-color: #a5d6a7;">
+            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (Latest News)</div>
+            <div id="news-display-area">
+                <!-- Dynamic News -->
+            </div>
+            <button class="btn-green" style="font-size:12px;" onclick="openModal('news-modal')">📸 नई न्यूज़ पोस्ट करें (फोटो/वीडियो के साथ)</button>
+        </div>
+
+        <!-- 5️⃣ सीरियल 5: मोहल्ला सेवाएं (बाज़ार व मित्र) -->
         <div class="card">
             <div class="card-title">🏪 मोहल्ला सेवाएं</div>
             <div class="service-grid">
@@ -144,40 +147,49 @@
             <div id="mitra-feed-area"></div>
         </div>
 
-        <!-- 📞 DIRECT CALL NUMBERS -->
+        <!-- 6️⃣ सीरियल 6: इमरजेंसी हेल्पलाइन नंबर (सिर्फ रिसीवर बटन) -->
         <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
-            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर (कॉल करें)</div>
-            <p style="font-size: 13px; line-height: 2;">
-                🚑 एम्बुलेंस: <b>108</b> <a href="tel:108" class="call-btn">कॉल करें 📞</a><br>
-                🚓 पुलिस: <b>112</b> <a href="tel:112" class="call-btn">कॉल करें 📞</a><br>
-                🔥 फायर ब्रिगेड: <b>101</b> <a href="tel:101" class="call-btn">कॉल करें 📞</a><br>
-                👩 महिला हेल्पलाइन: <b>1090</b> <a href="tel:1090" class="call-btn">कॉल करें 📞</a>
-            </p>
+            <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर</div>
+            
+            <div class="emergency-row">
+                <span>🚑 एम्बुलेंस: <b>108</b></span>
+                <a href="tel:108" class="receiver-btn">📞</a>
+            </div>
+            <div class="emergency-row">
+                <span>🚓 पुलिस: <b>112</b></span>
+                <a href="tel:112" class="receiver-btn">📞</a>
+            </div>
+            <div class="emergency-row">
+                <span>🔥 फायर ब्रिगेड: <b>101</b></span>
+                <a href="tel:101" class="receiver-btn">📞</a>
+            </div>
+            <div class="emergency-row">
+                <span>👩 महिला हेल्पलाइन: <b>1090</b></span>
+                <a href="tel:1090" class="receiver-btn">📞</a>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ================= CUSTOM MODAL POPUPS ================= -->
+<!-- ================= POPUP MODALS ================= -->
 
-<!-- 1. EMERGENCY MUNADI MODAL -->
 <div id="munadi-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('munadi-modal')">&times;</span>
         <h3 style="color:#c62828;">📢 आपातकालीन मुनादी जारी करें</h3>
-        <p style="font-size:11px; color:#666; margin-bottom:8px;">मुनादी पोस्ट होते ही लाउड अलार्म बजेगा और यह 24 घंटे तक दिखेगी।</p>
-        <textarea id="munadi-text-input" rows="3" placeholder="मुनादी का संदेश लिखें (उदा: बांध के पास पानी बढ़ रहा है...)"></textarea>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">मुनादी पोस्ट होते ही अलार्म बजेगा और यह 24 घंटे तक दिखेगी।</p>
+        <textarea id="munadi-text-input" rows="3" placeholder="मुनादी का संदेश लिखें..."></textarea>
         <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो संलग्न करें:</label>
         <input type="file" accept="image/,video/">
         <button class="btn-red" onclick="submitMunadi()">🔊 अलार्म बजाएं और मुनादी जारी करें</button>
     </div>
 </div>
 
-<!-- 2. LATEST NEWS MODAL -->
 <div id="news-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
         <h3>📰 ताज़ा समाचार पोस्ट करें</h3>
-        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह खबर 3 दिन (72 घंटे) बाद अपने आप हट जाएगी।</p>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह खबर 3 दिन बाद अपने आप हट जाएगी।</p>
         <textarea id="news-text-input" rows="3" placeholder="समाचार का विवरण लिखें..."></textarea>
         <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो संलग्न करें:</label>
         <input type="file" accept="image/,video/">
@@ -185,7 +197,6 @@
     </div>
 </div>
 
-<!-- 3. PAYMENT MODAL -->
 <div id="payment-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('payment-modal')">&times;</span>
@@ -195,7 +206,6 @@
     </div>
 </div>
 
-<!-- 4. GENERAL ALERT MODAL -->
 <div id="custom-alert-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('custom-alert-modal')">&times;</span>
@@ -205,7 +215,6 @@
     </div>
 </div>
 
-<!-- 5. MOHALLA BAZAR MODAL -->
 <div id="bazar-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('bazar-modal')">&times;</span>
@@ -219,7 +228,6 @@
     </div>
 </div>
 
-<!-- 6. MOHALLA MITRA MODAL -->
 <div id="mitra-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('mitra-modal')">&times;</span>
@@ -296,16 +304,15 @@
         checkSession();
     }
 
-    // --- DATA STORE & EXPIRY RENDER SYSTEM ---
     function getStorage(key) { return JSON.parse(localStorage.getItem(key) || "[]"); }
     function setStorage(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
     function renderAllFeeds() {
         var currentUser = localStorage.getItem("mohalla_user_name");
-        var currentCode = localStorage.getItem("mohalla_gram_code");
+        var currentCode = localStorage.getItem("mohalla_gram_code") || "169558";
         var now = new Date().getTime();
 
-        // 1. Render Emergency Munadi (24 Hours Expiry)
+        // 1. Munadi Feed
         var munadis = getStorage("app_munadi");
         var validMunadis = munadis.filter(function(m) {
             return (now - m.timestamp) < (24 * 60 * 60 * 1000) && m.gramCode === currentCode;
@@ -314,7 +321,7 @@
 
         var munadiHTML = "";
         if(validMunadis.length === 0) {
-            munadiHTML = '<div class="munadi-box"><b>आपकी ग्रामसभा (' + currentCode + ') में फ़िलहाल कोई आपातकालीन मुनादी नहीं है।</b></div>';
+            munadiHTML = '<div class="munadi-box"><b>ग्रामसभा (' + currentCode + ') में फ़िलहाल कोई आपातकालीन मुनादी नहीं है।</b></div>';
         } else {
             validMunadis.forEach(function(m, idx) {
                 var isOwner = (m.user === currentUser);
@@ -326,7 +333,7 @@
         }
         document.getElementById("munadi-display-area").innerHTML = munadiHTML;
 
-        // 2. Render News (3 Days Expiry)
+        // 2. News Feed
         var news = getStorage("app_news");
         var validNews = news.filter(function(nw) {
             return (now - nw.timestamp) < (3 * 24 * 60 * 60 * 1000);
@@ -347,26 +354,28 @@
         }
         document.getElementById("news-display-area").innerHTML = newsHTML;
 
-        // 3. Render Bazar Feed
+        // 3. Bazar Feed
         var bazar = getStorage("app_bazar");
         var bazarHTML = "";
         bazar.forEach(function(bz, idx) {
             var isOwner = (bz.user === currentUser);
-            bazarHTML += '<div class="feed-item">🛒 <b>' + bz.item + '</b> - ₹' + bz.price + '<br>📞 संपर्क: ' + bz.phone +
-                '<div class="posted-by-tag"><span>👤 विक्रेता: ' + bz.user + ' (कोड: ' + bz.gramCode + ')</span>' +
-                (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_bazar\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+            bazarHTML += '<div class="feed-item" style="display:flex; justify-content:space-between; align-items:center;">' +
+                '<div>🛒 <b>' + bz.item + '</b> - ₹' + bz.price + '<br><span style="font-size:11px; color:#555;">विक्रेता: ' + bz.user + ' (कोड: ' + bz.gramCode + ')</span></div>' +
+                '<div><a href="tel:' + bz.phone + '" class="receiver-btn">📞</a>' +
+                (isOwner ? ' <button class="delete-btn" onclick="deleteItem(\'app_bazar\',' + idx + ')">🗑️</button>' : '') +
                 '</div></div>';
         });
         document.getElementById("bazar-feed-area").innerHTML = bazarHTML;
 
-        // 4. Render Mitra Feed
+        // 4. Mitra Feed (Direct Receiver Button Added)
         var mitra = getStorage("app_mitra");
         var mitraHTML = "";
         mitra.forEach(function(mt, idx) {
             var isOwner = (mt.user === currentUser);
-            mitraHTML += '<div class="feed-item">🤝 <b>' + mt.name + '</b> (' + mt.type + ')<br>📞 कॉल: <a href="tel:' + mt.phone + '">' + mt.phone + '</a>' +
-                '<div class="posted-by-tag"><span>✍️ जोड़ा गया: ' + mt.user + ' (कोड: ' + mt.gramCode + ')</span>' +
-                (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_mitra\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+            mitraHTML += '<div class="feed-item" style="display:flex; justify-content:space-between; align-items:center;">' +
+                '<div>🤝 <b>' + mt.name + '</b> (' + mt.type + ')<br><span style="font-size:11px; color:#555;">जोड़ा: ' + mt.user + ' (कोड: ' + mt.gramCode + ')</span></div>' +
+                '<div><a href="tel:' + mt.phone + '" class="receiver-btn">📞</a>' +
+                (isOwner ? ' <button class="delete-btn" onclick="deleteItem(\'app_mitra\',' + idx + ')">🗑️</button>' : '') +
                 '</div></div>';
         });
         document.getElementById("mitra-feed-area").innerHTML = mitraHTML;
@@ -380,15 +389,17 @@
         showCustomAlert("आपकी पोस्ट सफलतापूर्वक डिलीट कर दी गई है!");
     }
 
-    // Submit Emergency Munadi with Sound
     function submitMunadi() {
         var txt = document.getElementById("munadi-text-input").value.trim();
+        var gCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var uName = localStorage.getItem("mohalla_user_name") || "Jitendra Pal";
+
         if(txt) {
             var munadis = getStorage("app_munadi");
             munadis.unshift({
                 text: txt,
-                user: localStorage.getItem("mohalla_user_name"),
-                gramCode: localStorage.getItem("mohalla_gram_code"),
+                user: uName,
+                gramCode: gCode,
                 timestamp: new Date().getTime()
             });
             setStorage("app_munadi", munadis);
@@ -402,12 +413,15 @@
 
     function submitNews() {
         var txt = document.getElementById("news-text-input").value.trim();
+        var gCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var uName = localStorage.getItem("mohalla_user_name") || "Jitendra Pal";
+
         if(txt) {
             var news = getStorage("app_news");
             news.unshift({
                 text: txt,
-                user: localStorage.getItem("mohalla_user_name"),
-                gramCode: localStorage.getItem("mohalla_gram_code"),
+                user: uName,
+                gramCode: gCode,
                 timestamp: new Date().getTime()
             });
             setStorage("app_news", news);
@@ -422,13 +436,15 @@
         var item = document.getElementById("bazar-item-name").value.trim();
         var price = document.getElementById("bazar-item-price").value.trim();
         var phone = document.getElementById("bazar-item-phone").value.trim();
+        var gCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var uName = localStorage.getItem("mohalla_user_name") || "Jitendra Pal";
 
         if(item) {
             var bazar = getStorage("app_bazar");
             bazar.unshift({
                 item: item, price: price, phone: phone,
-                user: localStorage.getItem("mohalla_user_name"),
-                gramCode: localStorage.getItem("mohalla_gram_code")
+                user: uName,
+                gramCode: gCode
             });
             setStorage("app_bazar", bazar);
             closeModal('bazar-modal');
@@ -441,13 +457,15 @@
         var name = document.getElementById("mitra-name").value.trim();
         var type = document.getElementById("mitra-type").value;
         var phone = document.getElementById("mitra-phone").value.trim();
+        var gCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var uName = localStorage.getItem("mohalla_user_name") || "Jitendra Pal";
 
         if(name) {
             var mitra = getStorage("app_mitra");
             mitra.unshift({
                 name: name, type: type, phone: phone,
-                user: localStorage.getItem("mohalla_user_name"),
-                gramCode: localStorage.getItem("mohalla_gram_code")
+                user: uName,
+                gramCode: gCode
             });
             setStorage("app_mitra", mitra);
             closeModal('mitra-modal');
@@ -491,7 +509,7 @@
         } catch(e){}
     }
 
-    // Dynamic 200 Questions Bank
+    // Dynamic 200 Questions
     var baseQuestions = [
         { q: "भारत की राजधानी कौन सी है?", options: ["लखनऊ", "नई दिल्ली", "मुंबई", "कोलकाता"], answer: 1 },
         { q: "उत्तर प्रदेश की राजधानी क्या है?", options: ["कानपुर", "वाराणसी", "लखनऊ", "प्रयागराज"], answer: 2 },
