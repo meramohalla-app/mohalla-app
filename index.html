@@ -19,7 +19,12 @@
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        /* Notice / News Ticker */
+        /* Status & Alert Box */
+        .msg-box { display: none; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+        /* Notice Ticker */
         .news-ticker { background: #fff8e1; border-left: 4px solid #ffb300; padding: 8px 12px; font-size: 13px; font-weight: 500; margin-bottom: 15px; border-radius: 4px; }
 
         /* Quiz Styling */
@@ -36,11 +41,11 @@
         .option-btn.wrong { background-color: #f44336 !important; color: #fff; border-color: #f44336; }
         .feedback-toast { display: none; text-align: center; margin-top: 8px; font-weight: bold; font-size: 14px; }
 
-        /* Grid Services */
+        /* Services Grid */
         .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
         .service-item { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; }
         
-        /* Header Bar with Logout */
+        /* Header Bar */
         .user-header { display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
         .logout-btn { width: auto; padding: 4px 10px; margin: 0; background: #c62828; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
@@ -50,19 +55,29 @@
 <div class="container">
     <h1>📱 मेरा मोहल्ला</h1>
 
-    <!-- 🔒 1. LOGIN SCREEN (सिर्फ तब दिखेगी जब तक लॉगिन न हो) -->
+    <!-- 🔒 1. LOGIN SCREEN -->
     <div id="login-screen" class="card">
         <div class="card-title">🔒 सुरक्षित OTP लॉगिन</div>
+        
+        <div id="login-msg" class="msg-box"></div>
+
         <input type="text" id="user-name" placeholder="पूरा नाम लिखें">
         <input type="file" accept="image/*">
         <select><option>उत्तर प्रदेश</option></select>
         <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)">
         <input type="text" id="user-phone" placeholder="10 अंकों का मोबाइल नंबर">
-        <button class="btn-green" onclick="alert('OTP आपके मोबाइल पर भेज दिया गया है!')">OTP भेजें</button>
-        <button class="btn-blue" onclick="doLogin()">लॉगिन करें</button>
+        
+        <button id="send-otp-btn" class="btn-green" onclick="sendOTP()">OTP भेजें</button>
+
+        <!-- OTP Input Area (प्रारंभ में छिपा रहेगा) -->
+        <div id="otp-section" style="display: none; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 10px;">
+            <label style="font-size: 12px; font-weight: bold; color: #1565c0;">दर्ज करें 4-अंकों का OTP:</label>
+            <input type="text" id="input-otp" placeholder="उदा: 1234" maxlength="4">
+            <button class="btn-blue" onclick="verifyOTPAndLogin()">OTP सत्यापित करें और लॉगिन करें</button>
+        </div>
     </div>
 
-    <!-- 📲 2. MAIN APP CONTENT (लॉगिन के बाद ही दिखेगा) -->
+    <!-- 📲 2. MAIN APP CONTENT -->
     <div id="app-content" style="display: none;">
         
         <!-- User Bar & Logout -->
@@ -131,7 +146,48 @@
 </div>
 
 <script>
-    // --- LOGIN / LOGOUT SYSTEM ---
+    let generatedOTP = "";
+
+    // --- OTP & LOGIN SYSTEM ---
+    function showMsg(text, type) {
+        const msgBox = document.getElementById("login-msg");
+        msgBox.innerText = text;
+        msgBox.className = msg-box msg-${type};
+        msgBox.style.display = "block";
+    }
+
+    function sendOTP() {
+        const phone = document.getElementById("user-phone").value.trim();
+        const name = document.getElementById("user-name").value.trim();
+
+        if (!name) {
+            showMsg("⚠️ कृपया पहले अपना पूरा नाम लिखें!", "error");
+            return;
+        }
+        if (phone.length < 10) {
+            showMsg("⚠️ कृपया 10 अंकों का सही मोबाइल नंबर लिखें!", "error");
+            return;
+        }
+
+        // Generate 4-digit demo OTP
+        generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+        
+        showMsg(✅ OTP भेज दिया गया है! आपका टेस्ट OTP है: ${generatedOTP}, "success");
+        document.getElementById("otp-section").style.display = "block";
+    }
+
+    function verifyOTPAndLogin() {
+        const inputOtp = document.getElementById("input-otp").value.trim();
+        const name = document.getElementById("user-name").value.trim();
+
+        if (inputOtp === generatedOTP && generatedOTP !== "") {
+            localStorage.setItem("mohalla_user_name", name);
+            checkLoginStatus();
+        } else {
+            showMsg("❌ गलत OTP! कृपया सही OTP दर्ज करें।", "error");
+        }
+    }
+
     function checkLoginStatus() {
         const savedName = localStorage.getItem("mohalla_user_name");
         if (savedName) {
@@ -145,19 +201,11 @@
         }
     }
 
-    function doLogin() {
-        const nameInput = document.getElementById("user-name").value.trim();
-        if(!nameInput) {
-            alert("कृपया अपना पूरा नाम लिखें!");
-            return;
-        }
-        localStorage.setItem("mohalla_user_name", nameInput);
-        checkLoginStatus();
-    }
-
     function doLogout() {
         if(confirm("क्या आप सचमुच लॉगआउट करना चाहते हैं?")) {
             localStorage.removeItem("mohalla_user_name");
+            document.getElementById("otp-section").style.display = "none";
+            document.getElementById("login-msg").style.display = "none";
             checkLoginStatus();
         }
     }
@@ -282,7 +330,6 @@
         document.getElementById("bar-wrong").style.width = ${wrongWidth}%;
     }
 
-    // ऑटो चेक करें कि यूज़र पहले से लॉगिन है या नहीं
     window.onload = checkLoginStatus;
 </script>
 
