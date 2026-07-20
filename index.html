@@ -6,31 +6,39 @@
     <title>मेरा मोहल्ला - Mera Mohalla App</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f7f6; color: #333; padding: 15px; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1e88e5; margin-bottom: 20px; font-size: 24px; }
+        body { background-color: #f0f2f5; color: #333; padding: 12px; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1e88e5; margin-bottom: 15px; font-size: 22px; }
         
-        /* Quiz Section Styling */
-        .quiz-card { background: #e3f2fd; padding: 18px; border-radius: 10px; border: 1px solid #bbdefb; margin-bottom: 20px; }
-        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: bold; }
+        .card { background: #ffffff; border: 1px solid #e0e0e0; padding: 14px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .card-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         
-        /* Progress Bar / Graph */
-        .progress-container { width: 100%; background-color: #e0e0e0; border-radius: 8px; overflow: hidden; height: 12px; margin-bottom: 15px; display: flex; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .btn-green { background-color: #2e7d32; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-blue { background-color: #1565c0; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
+
+        /* Notice / News Ticker */
+        .news-ticker { background: #fff8e1; border-left: 4px solid #ffb300; padding: 8px 12px; font-size: 13px; font-weight: 500; margin-bottom: 15px; border-radius: 4px; }
+
+        /* Quiz Styling */
+        .quiz-card { background: #e3f2fd; border: 1px solid #bbdefb; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+        .progress-container { width: 100%; background-color: #e0e0e0; border-radius: 8px; overflow: hidden; height: 10px; margin-bottom: 12px; display: flex; }
         .progress-correct { background-color: #4caf50; height: 100%; width: 0%; transition: width 0.3s; }
         .progress-wrong { background-color: #f44336; height: 100%; width: 0%; transition: width 0.3s; }
-        
-        .stats-text { font-size: 13px; color: #555; display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .question-text { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #0d47a1; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .option-btn { background: #fff; border: 2px solid #2196f3; padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: left; }
-        .option-btn:active { transform: scale(0.98); }
+        .stats-text { font-size: 12px; color: #555; display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .question-text { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #0d47a1; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .option-btn { background: #fff; border: 2px solid #2196f3; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: left; }
         .option-btn.correct { background-color: #4caf50 !important; color: #fff; border-color: #4caf50; }
         .option-btn.wrong { background-color: #f44336 !important; color: #fff; border-color: #f44336; }
-        
-        /* Feedback Toast */
-        .feedback-toast { display: none; text-align: center; margin-top: 10px; font-weight: bold; font-size: 15px; animation: pop 0.3s ease; }
-        @keyframes pop { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+        .feedback-toast { display: none; text-align: center; margin-top: 8px; font-weight: bold; font-size: 14px; }
+
+        /* Grid Services */
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+        .service-item { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -38,39 +46,97 @@
 <div class="container">
     <h1>📱 मेरा मोहल्ला</h1>
 
-    <!-- QUIZ SECTION -->
-    <div class="quiz-card">
+    <!-- 📢 NOTICE & NEWS UPDATE -->
+    <div class="news-ticker">
+        📢 <b>ताज़ा अपडेट:</b> ग्रामसभा में कल सुबह 10 बजे स्वास्थ्य शिविर और बैठक का आयोजन होगा।
+    </div>
+
+    <!-- 🔒 LOGIN SECTION -->
+    <div class="card">
+        <div class="card-title">🔒 सुरक्षित OTP लॉगिन</div>
+        <input type="text" placeholder="पूरा नाम लिखें">
+        <input type="file" accept="image/*">
+        <select><option>उत्तर प्रदेश</option></select>
+        <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)">
+        <input type="text" placeholder="10 अंकों का मोबाइल नंबर">
+        <button class="btn-green">OTP भेजें</button>
+        <button class="btn-blue">लॉगिन करें</button>
+    </div>
+
+    <!-- 💼 GOVT EXAM & ₹10 TEST -->
+    <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
+        <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
+        <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
+        <button class="btn-orange">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
+    </div>
+
+    <!-- 🎯 DAILY QUIZ -->
+    <div class="card quiz-card">
         <div class="quiz-header">
             <span>🎯 आज का मुफ्त टेस्ट (Daily Quiz)</span>
             <span id="q-count">1/5</span>
         </div>
-
-        <!-- Live Score & Graph -->
         <div class="stats-text">
             <span>सही: <b id="correct-count" style="color:green;">0</b></span>
-            <span>सफलता दर: <b id="accuracy-percent">0%</b></span>
+            <span>सफलता: <b id="accuracy-percent">0%</b></span>
             <span>गलत: <b id="wrong-count" style="color:red;">0</b></span>
         </div>
         <div class="progress-container">
             <div id="bar-correct" class="progress-correct"></div>
             <div id="bar-wrong" class="progress-wrong"></div>
         </div>
-
-        <!-- Question Area -->
         <div class="question-text" id="question-box">प्रश्न लोड हो रहा है...</div>
-
-        <!-- Options -->
-        <div class="options-grid" id="options-box">
-            <!-- Buttons dynamically generated -->
-        </div>
-
-        <!-- Animation Feedback -->
+        <div class="options-grid" id="options-box"></div>
         <div id="feedback" class="feedback-toast"></div>
+    </div>
+
+    <!-- 🛍️ MOHALLA BAZAR & MOHALLA MITRA -->
+    <div class="card">
+        <div class="card-title">🏪 मोहल्ला सेवाएं</div>
+        <div class="service-grid">
+            <div class="service-item">🛍️ मोहल्ला बाज़ार<br><span style="font-size:10px; color:#666;">(सामान खरीदें/बेचें)</span></div>
+            <div class="service-item">🤝 मोहल्ला मित्र<br><span style="font-size:10px; color:#666;">(स्थानीय मददगार)</span></div>
+        </div>
+    </div>
+
+    <!-- 🚨 EMERGENCY ALERT & 3 BEEPS -->
+    <div class="card" style="background: #ffebee; border-color: #ffcdd2;">
+        <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व इमरजेंसी अलार्म</div>
+        <p style="font-size: 12px; color: #555; margin-bottom: 8px;">उदा: गाँव के बांध के पास पानी बढ़ रहा है या कोई आपदा स्थिति...</p>
+        <button class="btn-red" onclick="playThreeBeeps()">🔊 इमरजेंसी अलर्ट बजाएं (3 छोटी बीप)</button>
+    </div>
+
+    <!-- 📞 EMERGENCY NUMBERS -->
+    <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
+        <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर</div>
+        <p style="font-size: 13px; line-height: 1.6;">
+            🚑 एम्बुलेंस: <b>108</b> | 🚓 पुलिस: <b>112</b><br>
+            🔥 फायर ब्रिगेड: <b>101</b> | 👩 महिला हेल्पलाइन: <b>1090</b>
+        </p>
     </div>
 </div>
 
 <script>
-    // Audio Synthesis for "Wow!" Sound
+    // 3 Short Beeps Audio Function
+    function playThreeBeeps() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            [0, 0.25, 0.5].forEach(delay => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
+                gain.gain.setValueAtTime(0.5, ctx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + delay);
+                osc.stop(ctx.currentTime + delay + 0.15);
+            });
+        } catch(e){}
+    }
+
+    // Wow Sound Function
     function playWowSound() {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -104,9 +170,8 @@
 
     function loadQuestion() {
         if(currentQ >= questions.length) {
-            // Quiz Complete State
             document.getElementById("question-box").innerText = "🎉 क्विज़ पूरा हुआ!";
-            document.getElementById("options-box").innerHTML = <div style='grid-column: span 2; text-align:center; font-weight:bold; padding:10px;'>आपका स्कोर: ${correctAns}/${questions.length} (${Math.round((correctAns/questions.length)*100)}%)</div>;
+            document.getElementById("options-box").innerHTML = <div style='grid-column: span 2; text-align:center; font-weight:bold;'>आपका स्कोर: ${correctAns}/${questions.length} (${Math.round((correctAns/questions.length)*100)}%)</div>;
             document.getElementById("feedback").style.display = "none";
             return;
         }
@@ -152,7 +217,6 @@
         feedbackEl.style.display = "block";
         updateStats();
 
-        // Auto Next Question in 1.5 seconds without prompt
         setTimeout(() => {
             currentQ++;
             loadQuestion();
@@ -167,7 +231,6 @@
         const accuracy = totalAttempted > 0 ? Math.round((correctAns / totalAttempted) * 100) : 0;
         document.getElementById("accuracy-percent").innerText = ${accuracy}%;
 
-        // Graph updates
         const correctWidth = (correctAns / questions.length) * 100;
         const wrongWidth = (wrongAns / questions.length) * 100;
 
@@ -175,8 +238,7 @@
         document.getElementById("bar-wrong").style.width = ${wrongWidth}%;
     }
 
-    // Start Quiz
-    loadQuestion();
+    window.onload = loadQuestion;
 </script>
 
 </body>
