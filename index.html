@@ -19,15 +19,10 @@
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        /* Status & Alert Box */
-        .msg-box { display: none; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-        .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-        .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .msg-box { padding: 10px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
 
-        /* Notice Ticker */
         .news-ticker { background: #fff8e1; border-left: 4px solid #ffb300; padding: 8px 12px; font-size: 13px; font-weight: 500; margin-bottom: 15px; border-radius: 4px; }
 
-        /* Quiz Styling */
         .quiz-card { background: #e3f2fd; border: 1px solid #bbdefb; }
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
         .progress-container { width: 100%; background-color: #e0e0e0; border-radius: 8px; overflow: hidden; height: 10px; margin-bottom: 12px; display: flex; }
@@ -41,11 +36,9 @@
         .option-btn.wrong { background-color: #f44336 !important; color: #fff; border-color: #f44336; }
         .feedback-toast { display: none; text-align: center; margin-top: 8px; font-weight: bold; font-size: 14px; }
 
-        /* Services Grid */
         .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
         .service-item { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: bold; }
         
-        /* Header Bar */
         .user-header { display: flex; justify-content: space-between; align-items: center; background: #e8f5e9; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
         .logout-btn { width: auto; padding: 4px 10px; margin: 0; background: #c62828; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
@@ -59,46 +52,41 @@
     <div id="login-screen" class="card">
         <div class="card-title">🔒 सुरक्षित OTP लॉगिन</div>
         
-        <div id="login-msg" class="msg-box"></div>
-
-        <input type="text" id="user-name" placeholder="पूरा नाम लिखें">
+        <input type="text" id="user-name" placeholder="पूरा नाम लिखें" value="Jitendra Pal">
         <input type="file" accept="image/*">
         <select><option>उत्तर प्रदेश</option></select>
-        <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)">
-        <input type="text" id="user-phone" placeholder="10 अंकों का मोबाइल नंबर">
+        <input type="text" placeholder="ग्रामसभा कोड (उदा: 169558)" value="169558">
+        <input type="text" id="user-phone" placeholder="10 अंकों का मोबाइल नंबर" value="9795124613">
         
-        <button id="send-otp-btn" class="btn-green" onclick="sendOTP()">OTP भेजें</button>
+        <button id="otp-btn" class="btn-green" onclick="generateAndShowOTP()">OTP भेजें</button>
 
-        <!-- OTP Input Area (प्रारंभ में छिपा रहेगा) -->
-        <div id="otp-section" style="display: none; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 10px;">
-            <label style="font-size: 12px; font-weight: bold; color: #1565c0;">दर्ज करें 4-अंकों का OTP:</label>
-            <input type="text" id="input-otp" placeholder="उदा: 1234" maxlength="4">
-            <button class="btn-blue" onclick="verifyOTPAndLogin()">OTP सत्यापित करें और लॉगिन करें</button>
+        <!-- OTP Area -->
+        <div id="otp-section" style="display: none; margin-top: 12px; border-top: 1px solid #ddd; padding-top: 10px;">
+            <div class="msg-box">✅ OTP भेज दिया गया है! आपका टेस्ट OTP: <b id="show-otp">1234</b></div>
+            <label style="font-size: 12px; font-weight: bold; color: #1565c0;">4-अंकों का OTP दर्ज करें:</label>
+            <input type="text" id="input-otp" placeholder="उदा: 1234" value="1234" maxlength="4">
+            <button class="btn-blue" onclick="doLoginProcess()">लॉगिन करें</button>
         </div>
     </div>
 
     <!-- 📲 2. MAIN APP CONTENT -->
     <div id="app-content" style="display: none;">
         
-        <!-- User Bar & Logout -->
         <div class="user-header">
             <span>👤 नमस्ते, <b id="display-name">यूज़र</b></span>
             <button class="logout-btn" onclick="doLogout()">लॉगआउट 🚪</button>
         </div>
 
-        <!-- 📢 NOTICE & NEWS UPDATE -->
         <div class="news-ticker">
             📢 <b>ताज़ा अपडेट:</b> ग्रामसभा में कल सुबह 10 बजे स्वास्थ्य शिविर और बैठक का आयोजन होगा।
         </div>
 
-        <!-- 💼 GOVT EXAM & ₹10 TEST -->
         <div class="card" style="background: #fff3e0; border-color: #ffe0b2;">
             <div class="card-title" style="color: #e65100;">💼 सरकारी नौकरी एवं प्रतियोगी परीक्षा</div>
             <p style="font-size: 13px; margin-bottom: 8px;">यूपी पुलिस, लेखपाल, रेलवे की पक्की तैयारी।</p>
             <button class="btn-orange">📝 ₹10 देकर प्रतियोगी परीक्षा (Mega Test) में भाग लें</button>
         </div>
 
-        <!-- 🎯 DAILY QUIZ -->
         <div class="card quiz-card">
             <div class="quiz-header">
                 <span>🎯 आज का मुफ्त टेस्ट (Daily Quiz)</span>
@@ -118,7 +106,6 @@
             <div id="feedback" class="feedback-toast"></div>
         </div>
 
-        <!-- 🛍️ MOHALLA BAZAR & MOHALLA MITRA -->
         <div class="card">
             <div class="card-title">🏪 मोहल्ला सेवाएं</div>
             <div class="service-grid">
@@ -127,14 +114,12 @@
             </div>
         </div>
 
-        <!-- 🚨 EMERGENCY ALERT & 3 BEEPS -->
         <div class="card" style="background: #ffebee; border-color: #ffcdd2;">
             <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व इमरजेंसी अलार्म</div>
             <p style="font-size: 12px; color: #555; margin-bottom: 8px;">उदा: गाँव के बांध के पास पानी बढ़ रहा है या कोई आपदा स्थिति...</p>
             <button class="btn-red" onclick="playThreeBeeps()">🔊 इमरजेंसी अलर्ट बजाएं (3 छोटी बीप)</button>
         </div>
 
-        <!-- 📞 EMERGENCY NUMBERS -->
         <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
             <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर</div>
             <p style="font-size: 13px; line-height: 1.6;">
@@ -146,51 +131,25 @@
 </div>
 
 <script>
-    let generatedOTP = "";
+    var currentOTP = "1234";
 
-    // --- OTP & LOGIN SYSTEM ---
-    function showMsg(text, type) {
-        const msgBox = document.getElementById("login-msg");
-        msgBox.innerText = text;
-        msgBox.className = msg-box msg-${type};
-        msgBox.style.display = "block";
-    }
-
-    function sendOTP() {
-        const phone = document.getElementById("user-phone").value.trim();
-        const name = document.getElementById("user-name").value.trim();
-
-        if (!name) {
-            showMsg("⚠️ कृपया पहले अपना पूरा नाम लिखें!", "error");
-            return;
-        }
-        if (phone.length < 10) {
-            showMsg("⚠️ कृपया 10 अंकों का सही मोबाइल नंबर लिखें!", "error");
-            return;
-        }
-
-        // Generate 4-digit demo OTP
-        generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-        
-        showMsg(✅ OTP भेज दिया गया है! आपका टेस्ट OTP है: ${generatedOTP}, "success");
+    function generateAndShowOTP() {
+        currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
+        document.getElementById("show-otp").innerText = currentOTP;
+        document.getElementById("input-otp").value = currentOTP;
         document.getElementById("otp-section").style.display = "block";
     }
 
-    function verifyOTPAndLogin() {
-        const inputOtp = document.getElementById("input-otp").value.trim();
-        const name = document.getElementById("user-name").value.trim();
-
-        if (inputOtp === generatedOTP && generatedOTP !== "") {
-            localStorage.setItem("mohalla_user_name", name);
-            checkLoginStatus();
-        } else {
-            showMsg("❌ गलत OTP! कृपया सही OTP दर्ज करें।", "error");
-        }
+    function doLoginProcess() {
+        var name = document.getElementById("user-name").value;
+        if(!name) name = "Jitendra Pal";
+        localStorage.setItem("mohalla_user_name", name);
+        checkSession();
     }
 
-    function checkLoginStatus() {
-        const savedName = localStorage.getItem("mohalla_user_name");
-        if (savedName) {
+    function checkSession() {
+        var savedName = localStorage.getItem("mohalla_user_name");
+        if(savedName) {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-content").style.display = "block";
             document.getElementById("display-name").innerText = savedName;
@@ -202,21 +161,17 @@
     }
 
     function doLogout() {
-        if(confirm("क्या आप सचमुच लॉगआउट करना चाहते हैं?")) {
-            localStorage.removeItem("mohalla_user_name");
-            document.getElementById("otp-section").style.display = "none";
-            document.getElementById("login-msg").style.display = "none";
-            checkLoginStatus();
-        }
+        localStorage.removeItem("mohalla_user_name");
+        document.getElementById("otp-section").style.display = "none";
+        checkSession();
     }
 
-    // --- AUDIO FUNCTIONS ---
     function playThreeBeeps() {
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            [0, 0.25, 0.5].forEach(delay => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            [0, 0.25, 0.5].forEach(function(delay) {
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
                 gain.gain.setValueAtTime(0.5, ctx.currentTime + delay);
@@ -231,9 +186,9 @@
 
     function playWowSound() {
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(400, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.3);
@@ -246,8 +201,7 @@
         } catch(e){}
     }
 
-    // --- QUIZ LOGIC ---
-    const questions = [
+    var questions = [
         { q: "भारत की राजधानी कौन सी है?", options: ["लखनऊ", "नई दिल्ली", "मुंबई", "कोलकाता"], answer: 1 },
         { q: "उत्तर प्रदेश की राजधानी क्या है?", options: ["कानपुर", "वाराणसी", "लखनऊ", "प्रयागराज"], answer: 2 },
         { q: "भारत का राष्ट्रीय पक्षी कौन सा है?", options: ["मोर", "तोता", "कबूतर", "चील"], answer: 0 },
@@ -255,33 +209,33 @@
         { q: "एक सप्ताह में कितने दिन होते हैं?", options: ["5", "6", "7", "8"], answer: 2 }
     ];
 
-    let currentQ = 0;
-    let correctAns = 0;
-    let wrongAns = 0;
-    let canClick = true;
+    var currentQ = 0;
+    var correctAns = 0;
+    var wrongAns = 0;
+    var canClick = true;
 
     function loadQuestion() {
         if(currentQ >= questions.length) {
             document.getElementById("question-box").innerText = "🎉 क्विज़ पूरा हुआ!";
-            document.getElementById("options-box").innerHTML = <div style='grid-column: span 2; text-align:center; font-weight:bold;'>आपका स्कोर: ${correctAns}/${questions.length} (${Math.round((correctAns/questions.length)*100)}%)</div>;
+            document.getElementById("options-box").innerHTML = "<div style='grid-column: span 2; text-align:center; font-weight:bold;'>आपका स्कोर: " + correctAns + "/" + questions.length + "</div>";
             document.getElementById("feedback").style.display = "none";
             return;
         }
 
         canClick = true;
-        const qData = questions[currentQ];
-        document.getElementById("q-count").innerText = ${currentQ + 1}/${questions.length};
-        document.getElementById("question-box").innerText = Q. ${qData.q};
+        var qData = questions[currentQ];
+        document.getElementById("q-count").innerText = (currentQ + 1) + "/" + questions.length;
+        document.getElementById("question-box").innerText = "Q. " + qData.q;
         document.getElementById("feedback").style.display = "none";
 
-        const optionsBox = document.getElementById("options-box");
+        var optionsBox = document.getElementById("options-box");
         optionsBox.innerHTML = "";
 
-        qData.options.forEach((opt, idx) => {
-            const btn = document.createElement("button");
+        qData.options.forEach(function(opt, idx) {
+            var btn = document.createElement("button");
             btn.className = "option-btn";
-            btn.innerText = (${String.fromCharCode(65 + idx)}) ${opt};
-            btn.onclick = () => selectOption(idx, btn);
+            btn.innerText = "(" + String.fromCharCode(65 + idx) + ") " + opt;
+            btn.onclick = function() { selectOption(idx, btn); };
             optionsBox.appendChild(btn);
         });
     }
@@ -290,8 +244,8 @@
         if(!canClick) return;
         canClick = false;
 
-        const qData = questions[currentQ];
-        const feedbackEl = document.getElementById("feedback");
+        var qData = questions[currentQ];
+        var feedbackEl = document.getElementById("feedback");
 
         if(selectedIdx === qData.answer) {
             correctAns++;
@@ -309,28 +263,28 @@
         feedbackEl.style.display = "block";
         updateStats();
 
-        setTimeout(() => {
+        setTimeout(function() {
             currentQ++;
             loadQuestion();
         }, 1500);
     }
 
     function updateStats() {
-        const totalAttempted = correctAns + wrongAns;
+        var totalAttempted = correctAns + wrongAns;
         document.getElementById("correct-count").innerText = correctAns;
         document.getElementById("wrong-count").innerText = wrongAns;
 
-        const accuracy = totalAttempted > 0 ? Math.round((correctAns / totalAttempted) * 100) : 0;
-        document.getElementById("accuracy-percent").innerText = ${accuracy}%;
+        var accuracy = totalAttempted > 0 ? Math.round((correctAns / totalAttempted) * 100) : 0;
+        document.getElementById("accuracy-percent").innerText = accuracy + "%";
 
-        const correctWidth = (correctAns / questions.length) * 100;
-        const wrongWidth = (wrongAns / questions.length) * 100;
+        var correctWidth = (correctAns / questions.length) * 100;
+        var wrongWidth = (wrongAns / questions.length) * 100;
 
-        document.getElementById("bar-correct").style.width = ${correctWidth}%;
-        document.getElementById("bar-wrong").style.width = ${wrongWidth}%;
+        document.getElementById("bar-correct").style.width = correctWidth + "%";
+        document.getElementById("bar-wrong").style.width = wrongWidth + "%";
     }
 
-    window.onload = checkLoginStatus;
+    window.onload = checkSession;
 </script>
 
 </body>
