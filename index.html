@@ -19,7 +19,7 @@
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        .notice-box { background: #ffe0b2; border-left: 4px solid #e65100; padding: 10px; font-size: 13px; margin-bottom: 10px; border-radius: 4px; position: relative; }
+        .munadi-box { background: #ffebee; border-left: 4px solid #c62828; padding: 10px; font-size: 13px; margin-bottom: 10px; border-radius: 4px; position: relative; }
         .news-box { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 10px; font-size: 13px; margin-bottom: 10px; border-radius: 4px; position: relative; }
         .posted-by-tag { font-size: 11px; color: #666; margin-top: 6px; font-style: italic; border-top: 1px dashed #ccc; padding-top: 4px; display: flex; justify-content: space-between; align-items: center; }
 
@@ -84,18 +84,18 @@
             <button class="logout-btn" onclick="doLogout()">लॉगआउट 🚪</button>
         </div>
 
-        <!-- 📌 GRAMSABHA NOTICE BOARD -->
-        <div class="card" style="border-color: #ffe0b2;">
-            <div class="card-title" style="color: #e65100;">📌 ग्रामसभा नोटिस board (24 घंटे एक्सपायरी)</div>
-            <div id="notice-display-area">
-                <!-- Dynamic Notices Rendered Here -->
+        <!-- 🚨 1. EMERGENCY MUNADI & ALARM (MERGED FEATURE) -->
+        <div class="card" style="background: #fff5f5; border-color: #ffcdd2;">
+            <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व अलार्म (24 घंटे एक्सपायरी)</div>
+            <div id="munadi-display-area">
+                <!-- Dynamic Munadi Rendered Here -->
             </div>
-            <button class="btn-orange" style="font-size:12px;" onclick="openModal('notice-modal')">➕ ग्रामसभा नोटिस जारी करें</button>
+            <button class="btn-red" style="font-size:13px; margin-top:8px;" onclick="openModal('munadi-modal')">📣 नई आपातकालीन मुनादी करें (फोटो/वीडियो व अलार्म के साथ)</button>
         </div>
 
-        <!-- 📰 LATEST NEWS (Universal) -->
+        <!-- 📰 2. LATEST NEWS (3 Days Expiry) -->
         <div class="card" style="border-color: #a5d6a7;">
-            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (3 दिन एक्सपायरी)</div>
+            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (Latest News)</div>
             <div id="news-display-area">
                 <!-- Dynamic News Rendered Here -->
             </div>
@@ -144,13 +144,6 @@
             <div id="mitra-feed-area"></div>
         </div>
 
-        <!-- 🚨 LOUD EMERGENCY ALERT -->
-        <div class="card" style="background: #ffebee; border-color: #ffcdd2;">
-            <div class="card-title" style="color: #c62828;">🚨 आपातकालीन मुनादी व इमरजेंसी अलार्म</div>
-            <p style="font-size: 12px; color: #555; margin-bottom: 8px;">उदा: गाँव के बांध के पास पानी बढ़ रहा है या कोई आपदा स्थिति...</p>
-            <button class="btn-red" onclick="playLoudAlarm()">🔊 लाउड इमरजेंसी अलार्म बजाएं (3 ज़ोरदार बीप)</button>
-        </div>
-
         <!-- 📞 DIRECT CALL NUMBERS -->
         <div class="card" style="background: #e8f5e9; border-color: #c8e6c9;">
             <div class="card-title" style="color: #2e7d32;">📞 इमरजेंसी हेल्पलाइन नंबर (कॉल करें)</div>
@@ -166,16 +159,20 @@
 
 <!-- ================= CUSTOM MODAL POPUPS ================= -->
 
-<div id="notice-modal" class="modal">
+<!-- 1. EMERGENCY MUNADI MODAL -->
+<div id="munadi-modal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('notice-modal')">&times;</span>
-        <h3>📌 ग्रामसभा नोटिस पोस्ट करें</h3>
-        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह नोटिस 24 घंटे बाद अपने आप हट जाएगा।</p>
-        <textarea id="notice-text-input" rows="3" placeholder="ग्रामसभा का नोटिस लिखें..."></textarea>
-        <button class="btn-orange" onclick="submitNotice()">ग्रामसभा में नोटिस भेजें</button>
+        <span class="close-btn" onclick="closeModal('munadi-modal')">&times;</span>
+        <h3 style="color:#c62828;">📢 आपातकालीन मुनादी जारी करें</h3>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">मुनादी पोस्ट होते ही लाउड अलार्म बजेगा और यह 24 घंटे तक दिखेगी।</p>
+        <textarea id="munadi-text-input" rows="3" placeholder="मुनादी का संदेश लिखें (उदा: बांध के पास पानी बढ़ रहा है...)"></textarea>
+        <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो संलग्न करें:</label>
+        <input type="file" accept="image/,video/">
+        <button class="btn-red" onclick="submitMunadi()">🔊 अलार्म बजाएं और मुनादी जारी करें</button>
     </div>
 </div>
 
+<!-- 2. LATEST NEWS MODAL -->
 <div id="news-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
@@ -188,6 +185,7 @@
     </div>
 </div>
 
+<!-- 3. PAYMENT MODAL -->
 <div id="payment-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('payment-modal')">&times;</span>
@@ -197,6 +195,7 @@
     </div>
 </div>
 
+<!-- 4. GENERAL ALERT MODAL -->
 <div id="custom-alert-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('custom-alert-modal')">&times;</span>
@@ -206,6 +205,7 @@
     </div>
 </div>
 
+<!-- 5. MOHALLA BAZAR MODAL -->
 <div id="bazar-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('bazar-modal')">&times;</span>
@@ -219,6 +219,7 @@
     </div>
 </div>
 
+<!-- 6. MOHALLA MITRA MODAL -->
 <div id="mitra-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('mitra-modal')">&times;</span>
@@ -296,41 +297,36 @@
     }
 
     // --- DATA STORE & EXPIRY RENDER SYSTEM ---
-
-    function getStorage(key) {
-        return JSON.parse(localStorage.getItem(key) || "[]");
-    }
-    function setStorage(key, data) {
-        localStorage.setItem(key, JSON.stringify(data));
-    }
+    function getStorage(key) { return JSON.parse(localStorage.getItem(key) || "[]"); }
+    function setStorage(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
     function renderAllFeeds() {
         var currentUser = localStorage.getItem("mohalla_user_name");
         var currentCode = localStorage.getItem("mohalla_gram_code");
         var now = new Date().getTime();
 
-        // 1. Render Notices (24 Hours Expiry = 24 * 60 * 60 * 1000 ms)
-        var notices = getStorage("app_notices");
-        var validNotices = notices.filter(function(n) {
-            return (now - n.timestamp) < (24 * 60 * 60 * 1000) && n.gramCode === currentCode;
+        // 1. Render Emergency Munadi (24 Hours Expiry)
+        var munadis = getStorage("app_munadi");
+        var validMunadis = munadis.filter(function(m) {
+            return (now - m.timestamp) < (24 * 60 * 60 * 1000) && m.gramCode === currentCode;
         });
-        setStorage("app_notices", validNotices);
+        setStorage("app_munadi", validMunadis);
 
-        var noticeHTML = "";
-        if(validNotices.length === 0) {
-            noticeHTML = '<div class="notice-box"><b>आपकी ग्रामसभा (' + currentCode + ') में फ़िलहाल कोई सक्रिय नोटिस नहीं है।</b></div>';
+        var munadiHTML = "";
+        if(validMunadis.length === 0) {
+            munadiHTML = '<div class="munadi-box"><b>आपकी ग्रामसभा (' + currentCode + ') में फ़िलहाल कोई आपातकालीन मुनादी नहीं है।</b></div>';
         } else {
-            validNotices.forEach(function(n, idx) {
-                var isOwner = (n.user === currentUser);
-                noticeHTML += '<div class="notice-box"><b>' + n.text + '</b>' +
-                    '<div class="posted-by-tag"><span>✍️ प्रेषक: ' + n.user + ' (कोड: ' + n.gramCode + ')</span>' +
-                    (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_notices\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+            validMunadis.forEach(function(m, idx) {
+                var isOwner = (m.user === currentUser);
+                munadiHTML += '<div class="munadi-box">🚨 <b>' + m.text + '</b>' +
+                    '<div class="posted-by-tag"><span>✍️ मुनादीकर्ता: ' + m.user + ' (कोड: ' + m.gramCode + ')</span>' +
+                    (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_munadi\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
                     '</div></div>';
             });
         }
-        document.getElementById("notice-display-area").innerHTML = noticeHTML;
+        document.getElementById("munadi-display-area").innerHTML = munadiHTML;
 
-        // 2. Render News (3 Days Expiry = 3 * 24 * 60 * 60 * 1000 ms)
+        // 2. Render News (3 Days Expiry)
         var news = getStorage("app_news");
         var validNews = news.filter(function(nw) {
             return (now - nw.timestamp) < (3 * 24 * 60 * 60 * 1000);
@@ -384,21 +380,23 @@
         showCustomAlert("आपकी पोस्ट सफलतापूर्वक डिलीट कर दी गई है!");
     }
 
-    function submitNotice() {
-        var txt = document.getElementById("notice-text-input").value.trim();
+    // Submit Emergency Munadi with Sound
+    function submitMunadi() {
+        var txt = document.getElementById("munadi-text-input").value.trim();
         if(txt) {
-            var notices = getStorage("app_notices");
-            notices.unshift({
+            var munadis = getStorage("app_munadi");
+            munadis.unshift({
                 text: txt,
                 user: localStorage.getItem("mohalla_user_name"),
                 gramCode: localStorage.getItem("mohalla_gram_code"),
                 timestamp: new Date().getTime()
             });
-            setStorage("app_notices", notices);
-            document.getElementById("notice-text-input").value = "";
-            closeModal('notice-modal');
+            setStorage("app_munadi", munadis);
+            document.getElementById("munadi-text-input").value = "";
+            closeModal('munadi-modal');
+            playLoudAlarm();
             renderAllFeeds();
-            showCustomAlert("ग्रामसभा नोटिस जारी हो गया! (24 घंटे बाद स्वतः हट जाएगा)");
+            showCustomAlert("🚨 आपातकालीन मुनादी जारी हो गई और अलार्म बज गया! (24 घंटे बाद स्वतः हट जाएगी)");
         }
     }
 
