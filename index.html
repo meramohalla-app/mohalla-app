@@ -19,9 +19,11 @@
         .btn-red { background-color: #d32f2f; color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-orange { background-color: #ef6c00; color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        .notice-box { background: #ffe0b2; border-left: 4px solid #e65100; padding: 10px; font-size: 13px; margin-bottom: 12px; border-radius: 4px; }
-        .news-box { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 10px; font-size: 13px; margin-bottom: 12px; border-radius: 4px; }
-        .posted-by-tag { font-size: 11px; color: #666; margin-top: 6px; font-style: italic; border-top: 1px dashed #ccc; padding-top: 4px; }
+        .notice-box { background: #ffe0b2; border-left: 4px solid #e65100; padding: 10px; font-size: 13px; margin-bottom: 10px; border-radius: 4px; position: relative; }
+        .news-box { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 10px; font-size: 13px; margin-bottom: 10px; border-radius: 4px; position: relative; }
+        .posted-by-tag { font-size: 11px; color: #666; margin-top: 6px; font-style: italic; border-top: 1px dashed #ccc; padding-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+
+        .delete-btn { background: #d32f2f; color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; font-style: normal; }
 
         /* Quiz Styling */
         .quiz-card { background: #e3f2fd; border: 1px solid #bbdefb; }
@@ -84,24 +86,18 @@
 
         <!-- 📌 GRAMSABHA NOTICE BOARD -->
         <div class="card" style="border-color: #ffe0b2;">
-            <div class="card-title" style="color: #e65100;">📌 ग्रामसभा नोटिस board</div>
+            <div class="card-title" style="color: #e65100;">📌 ग्रामसभा नोटिस board (24 घंटे एक्सपायरी)</div>
             <div id="notice-display-area">
-                <div class="notice-box">
-                    <b>कल ग्राम पंचायत भवन में स्वास्थ्य शिविर एवं आवश्यक बैठक बुलाई गई है।</b>
-                    <div class="posted-by-tag">✍️ प्रेषक: ग्राम प्रधान (ग्रामसभा कोड: <span id="notice-gram-tag">169558</span>)</div>
-                </div>
+                <!-- Dynamic Notices Rendered Here -->
             </div>
             <button class="btn-orange" style="font-size:12px;" onclick="openModal('notice-modal')">➕ ग्रामसभा नोटिस जारी करें</button>
         </div>
 
         <!-- 📰 LATEST NEWS (Universal) -->
         <div class="card" style="border-color: #a5d6a7;">
-            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (Latest News)</div>
+            <div class="card-title" style="color: #2e7d32;">📰 ताज़ा समाचार (3 दिन एक्सपायरी)</div>
             <div id="news-display-area">
-                <div class="news-box">
-                    <b>जिले में मौसम विभाग ने हल्की बारिश का अलर्ट जारी किया है।</b>
-                    <div class="posted-by-tag">✍️ रिपोर्टर: जितेंद्र पाल (ग्रामसभा कोड: 169558)</div>
-                </div>
+                <!-- Dynamic News Rendered Here -->
             </div>
             <button class="btn-green" style="font-size:12px;" onclick="openModal('news-modal')">📸 नई न्यूज़ पोस्ट करें (फोटो/वीडियो के साथ)</button>
         </div>
@@ -170,23 +166,21 @@
 
 <!-- ================= CUSTOM MODAL POPUPS ================= -->
 
-<!-- 1. GRAMSABHA NOTICE MODAL -->
 <div id="notice-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('notice-modal')">&times;</span>
         <h3>📌 ग्रामसभा नोटिस पोस्ट करें</h3>
-        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह नोटिस आपकी ग्रामसभा कोड वाले लोगों को दिखेगा।</p>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह नोटिस 24 घंटे बाद अपने आप हट जाएगा।</p>
         <textarea id="notice-text-input" rows="3" placeholder="ग्रामसभा का नोटिस लिखें..."></textarea>
         <button class="btn-orange" onclick="submitNotice()">ग्रामसभा में नोटिस भेजें</button>
     </div>
 </div>
 
-<!-- 2. LATEST NEWS MODAL -->
 <div id="news-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('news-modal')">&times;</span>
-        <h3>📰 ताज़ा समाचार पोस्ट करें (Universal)</h3>
-        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह खबर सभी गाँव के यूज़र्स को दिखाई देगी।</p>
+        <h3>📰 ताज़ा समाचार पोस्ट करें</h3>
+        <p style="font-size:11px; color:#666; margin-bottom:8px;">यह खबर 3 दिन (72 घंटे) बाद अपने आप हट जाएगी।</p>
         <textarea id="news-text-input" rows="3" placeholder="समाचार का विवरण लिखें..."></textarea>
         <label style="font-size:12px; font-weight:bold;">फोटो/वीडियो संलग्न करें:</label>
         <input type="file" accept="image/,video/">
@@ -194,7 +188,6 @@
     </div>
 </div>
 
-<!-- 3. PAYMENT MODAL -->
 <div id="payment-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('payment-modal')">&times;</span>
@@ -204,7 +197,6 @@
     </div>
 </div>
 
-<!-- 4. GENERAL ALERT MODAL -->
 <div id="custom-alert-modal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <span class="close-btn" onclick="closeModal('custom-alert-modal')">&times;</span>
@@ -214,12 +206,11 @@
     </div>
 </div>
 
-<!-- 5. MOHALLA BAZAR MODAL -->
 <div id="bazar-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('bazar-modal')">&times;</span>
         <h3>🛍️ मोहल्ला बाज़ार (सामान जोड़ें)</h3>
-        <input type="text" id="bazar-item-name" placeholder="सामान का नाम (उदा: साइकिल, गेहूं)">
+        <input type="text" id="bazar-item-name" placeholder="सामान का नाम">
         <input type="text" id="bazar-item-price" placeholder="कीमत (₹ रुपये में)">
         <input type="text" id="bazar-item-phone" placeholder="संपर्क मोबाइल नंबर">
         <label style="font-size:12px; font-weight:bold;">फ़ोटो / वीडियो चुनें:</label>
@@ -228,7 +219,6 @@
     </div>
 </div>
 
-<!-- 6. MOHALLA MITRA MODAL -->
 <div id="mitra-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('mitra-modal')">&times;</span>
@@ -268,11 +258,14 @@
     function doLoginProcess() {
         var name = document.getElementById("user-name").value.trim();
         var gCode = document.getElementById("gram-code").value.trim();
+        var phone = document.getElementById("user-phone").value.trim();
+
         if(!name) name = "Jitendra Pal";
         if(!gCode) gCode = "169558";
 
         localStorage.setItem("mohalla_user_name", name);
         localStorage.setItem("mohalla_gram_code", gCode);
+        localStorage.setItem("mohalla_user_phone", phone);
         checkSession();
     }
 
@@ -285,7 +278,8 @@
             document.getElementById("app-content").style.display = "block";
             document.getElementById("display-name").innerText = savedName;
             document.getElementById("display-gram-code").innerText = savedCode;
-            document.getElementById("notice-gram-tag").innerText = savedCode;
+            
+            renderAllFeeds();
             loadQuestion();
         } else {
             document.getElementById("login-screen").style.display = "block";
@@ -296,70 +290,170 @@
     function doLogout() {
         localStorage.removeItem("mohalla_user_name");
         localStorage.removeItem("mohalla_gram_code");
+        localStorage.removeItem("mohalla_user_phone");
         document.getElementById("otp-section").style.display = "none";
         checkSession();
     }
 
-    // Notice Submission with Auto Name & Gram Code
+    // --- DATA STORE & EXPIRY RENDER SYSTEM ---
+
+    function getStorage(key) {
+        return JSON.parse(localStorage.getItem(key) || "[]");
+    }
+    function setStorage(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function renderAllFeeds() {
+        var currentUser = localStorage.getItem("mohalla_user_name");
+        var currentCode = localStorage.getItem("mohalla_gram_code");
+        var now = new Date().getTime();
+
+        // 1. Render Notices (24 Hours Expiry = 24 * 60 * 60 * 1000 ms)
+        var notices = getStorage("app_notices");
+        var validNotices = notices.filter(function(n) {
+            return (now - n.timestamp) < (24 * 60 * 60 * 1000) && n.gramCode === currentCode;
+        });
+        setStorage("app_notices", validNotices);
+
+        var noticeHTML = "";
+        if(validNotices.length === 0) {
+            noticeHTML = '<div class="notice-box"><b>आपकी ग्रामसभा (' + currentCode + ') में फ़िलहाल कोई सक्रिय नोटिस नहीं है।</b></div>';
+        } else {
+            validNotices.forEach(function(n, idx) {
+                var isOwner = (n.user === currentUser);
+                noticeHTML += '<div class="notice-box"><b>' + n.text + '</b>' +
+                    '<div class="posted-by-tag"><span>✍️ प्रेषक: ' + n.user + ' (कोड: ' + n.gramCode + ')</span>' +
+                    (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_notices\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+                    '</div></div>';
+            });
+        }
+        document.getElementById("notice-display-area").innerHTML = noticeHTML;
+
+        // 2. Render News (3 Days Expiry = 3 * 24 * 60 * 60 * 1000 ms)
+        var news = getStorage("app_news");
+        var validNews = news.filter(function(nw) {
+            return (now - nw.timestamp) < (3 * 24 * 60 * 60 * 1000);
+        });
+        setStorage("app_news", validNews);
+
+        var newsHTML = "";
+        if(validNews.length === 0) {
+            newsHTML = '<div class="news-box"><b>फ़िलहाल कोई ताज़ा खबर नहीं है।</b></div>';
+        } else {
+            validNews.forEach(function(nw, idx) {
+                var isOwner = (nw.user === currentUser);
+                newsHTML += '<div class="news-box"><b>' + nw.text + '</b>' +
+                    '<div class="posted-by-tag"><span>✍️ रिपोर्टर: ' + nw.user + ' (कोड: ' + nw.gramCode + ')</span>' +
+                    (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_news\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+                    '</div></div>';
+            });
+        }
+        document.getElementById("news-display-area").innerHTML = newsHTML;
+
+        // 3. Render Bazar Feed
+        var bazar = getStorage("app_bazar");
+        var bazarHTML = "";
+        bazar.forEach(function(bz, idx) {
+            var isOwner = (bz.user === currentUser);
+            bazarHTML += '<div class="feed-item">🛒 <b>' + bz.item + '</b> - ₹' + bz.price + '<br>📞 संपर्क: ' + bz.phone +
+                '<div class="posted-by-tag"><span>👤 विक्रेता: ' + bz.user + ' (कोड: ' + bz.gramCode + ')</span>' +
+                (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_bazar\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+                '</div></div>';
+        });
+        document.getElementById("bazar-feed-area").innerHTML = bazarHTML;
+
+        // 4. Render Mitra Feed
+        var mitra = getStorage("app_mitra");
+        var mitraHTML = "";
+        mitra.forEach(function(mt, idx) {
+            var isOwner = (mt.user === currentUser);
+            mitraHTML += '<div class="feed-item">🤝 <b>' + mt.name + '</b> (' + mt.type + ')<br>📞 कॉल: <a href="tel:' + mt.phone + '">' + mt.phone + '</a>' +
+                '<div class="posted-by-tag"><span>✍️ जोड़ा गया: ' + mt.user + ' (कोड: ' + mt.gramCode + ')</span>' +
+                (isOwner ? '<button class="delete-btn" onclick="deleteItem(\'app_mitra\',' + idx + ')">डिलीट करें 🗑️</button>' : '') +
+                '</div></div>';
+        });
+        document.getElementById("mitra-feed-area").innerHTML = mitraHTML;
+    }
+
+    function deleteItem(key, index) {
+        var items = getStorage(key);
+        items.splice(index, 1);
+        setStorage(key, items);
+        renderAllFeeds();
+        showCustomAlert("आपकी पोस्ट सफलतापूर्वक डिलीट कर दी गई है!");
+    }
+
     function submitNotice() {
-        var txt = document.getElementById("notice-text-input").value;
+        var txt = document.getElementById("notice-text-input").value.trim();
         if(txt) {
-            var user = localStorage.getItem("mohalla_user_name") || "यूज़र";
-            var userCode = localStorage.getItem("mohalla_gram_code") || "169558";
-            
-            document.getElementById("notice-display-area").innerHTML = 
-                '<div class="notice-box"><b>' + txt + '</b>' +
-                '<div class="posted-by-tag">✍️ प्रेषक: ' + user + ' (ग्रामसभा कोड: ' + userCode + ')</div></div>';
+            var notices = getStorage("app_notices");
+            notices.unshift({
+                text: txt,
+                user: localStorage.getItem("mohalla_user_name"),
+                gramCode: localStorage.getItem("mohalla_gram_code"),
+                timestamp: new Date().getTime()
+            });
+            setStorage("app_notices", notices);
+            document.getElementById("notice-text-input").value = "";
             closeModal('notice-modal');
-            showCustomAlert("ग्रामसभा नोटिस आपकी ग्रामसभा (" + userCode + ") के लिए जारी हो गया!");
+            renderAllFeeds();
+            showCustomAlert("ग्रामसभा नोटिस जारी हो गया! (24 घंटे बाद स्वतः हट जाएगा)");
         }
     }
 
-    // News Submission with Auto Name & Gram Code
     function submitNews() {
-        var txt = document.getElementById("news-text-input").value;
+        var txt = document.getElementById("news-text-input").value.trim();
         if(txt) {
-            var user = localStorage.getItem("mohalla_user_name") || "यूज़र";
-            var userCode = localStorage.getItem("mohalla_gram_code") || "169558";
-
-            document.getElementById("news-display-area").innerHTML = 
-                '<div class="news-box"><b>' + txt + '</b>' +
-                '<div class="posted-by-tag">✍️ रिपोर्टर: ' + user + ' (ग्रामसभा कोड: ' + userCode + ')</div></div>';
+            var news = getStorage("app_news");
+            news.unshift({
+                text: txt,
+                user: localStorage.getItem("mohalla_user_name"),
+                gramCode: localStorage.getItem("mohalla_gram_code"),
+                timestamp: new Date().getTime()
+            });
+            setStorage("app_news", news);
+            document.getElementById("news-text-input").value = "";
             closeModal('news-modal');
-            showCustomAlert("ताज़ा खबर सभी गाँव के लोगों के लिए प्रकाशित कर दी गई!");
+            renderAllFeeds();
+            showCustomAlert("ताज़ा खबर प्रकाशित हो गई! (3 दिन बाद स्वतः हट जाएगी)");
         }
     }
 
-    // Mohalla Bazar Submission with Auto Name & Gram Code
     function submitBazarItem() {
-        var item = document.getElementById("bazar-item-name").value;
-        var price = document.getElementById("bazar-item-price").value;
-        var phone = document.getElementById("bazar-item-phone").value;
-        var user = localStorage.getItem("mohalla_user_name") || "यूज़र";
-        var userCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var item = document.getElementById("bazar-item-name").value.trim();
+        var price = document.getElementById("bazar-item-price").value.trim();
+        var phone = document.getElementById("bazar-item-phone").value.trim();
 
         if(item) {
-            var html = '<div class="feed-item">🛒 <b>' + item + '</b> - ₹' + price + '<br>📞 संपर्क: ' + phone +
-                       '<div class="posted-by-tag">👤 विक्रेता: ' + user + ' (ग्रामसभा कोड: ' + userCode + ')</div></div>';
-            document.getElementById("bazar-feed-area").innerHTML += html;
+            var bazar = getStorage("app_bazar");
+            bazar.unshift({
+                item: item, price: price, phone: phone,
+                user: localStorage.getItem("mohalla_user_name"),
+                gramCode: localStorage.getItem("mohalla_gram_code")
+            });
+            setStorage("app_bazar", bazar);
             closeModal('bazar-modal');
-            showCustomAlert("सामान बाज़ार में सफलतापूर्वक पोस्ट हो गया!");
+            renderAllFeeds();
+            showCustomAlert("सामान बाज़ार में लिस्ट हो गया!");
         }
     }
 
-    // Mohalla Mitra Submission with Auto Name & Gram Code
     function submitMitraItem() {
-        var name = document.getElementById("mitra-name").value;
+        var name = document.getElementById("mitra-name").value.trim();
         var type = document.getElementById("mitra-type").value;
-        var phone = document.getElementById("mitra-phone").value;
-        var user = localStorage.getItem("mohalla_user_name") || "यूज़र";
-        var userCode = localStorage.getItem("mohalla_gram_code") || "169558";
+        var phone = document.getElementById("mitra-phone").value.trim();
 
         if(name) {
-            var html = '<div class="feed-item">🤝 <b>' + name + '</b> (' + type + ')<br>📞 कॉल: <a href="tel:' + phone + '">' + phone + '</a>' +
-                       '<div class="posted-by-tag">✍️ जोड़ा गया: ' + user + ' (ग्रामसभा कोड: ' + userCode + ')</div></div>';
-            document.getElementById("mitra-feed-area").innerHTML += html;
+            var mitra = getStorage("app_mitra");
+            mitra.unshift({
+                name: name, type: type, phone: phone,
+                user: localStorage.getItem("mohalla_user_name"),
+                gramCode: localStorage.getItem("mohalla_gram_code")
+            });
+            setStorage("app_mitra", mitra);
             closeModal('mitra-modal');
+            renderAllFeeds();
             showCustomAlert("मोहल्ला मित्र लिस्ट में नंबर जुड़ गया!");
         }
     }
